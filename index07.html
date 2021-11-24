@@ -1,0 +1,64 @@
+<!--
+教學名稱:canvas 基本繪圖
+教學網址：https://www.youtube.com/watch?v=_isKwzD4xm8
+Goal : 用canvas 做基本繪圖
+    1. HTML 插入<canvas>  設定畫布
+    2.canvas 參數
+        xxx.fillStyle       定義顏色
+        xxx.globalApha      定義明度
+        xxx.fillRect(..)    填滿方塊
+        xxx.strokeStyle     定義邊框顏色
+        xxx.strokeRect(...) 畫方塊無填滿
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        window.onload=function(){
+            //練習1:畫一個填滿方塊
+            var cvs=document.getElementById("cvs");
+            var ctx=cvs.getContext("2d");
+            ctx.fillStyle="red";            // 設定畫布 填滿的顏色
+            ctx.globalAlpha = 0.5;          // 設定畫布 透明度
+            ctx.fillRect(50,50,100,100);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            //練習2: 畫一個外框
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle="blue";
+            ctx.strokeRect(200,200,50,50);   // 設定畫布 填滿區間 (200,200) 長50/寬50
+
+            //練習3:畫一條線
+            ctx.beginPath();
+            ctx.moveTo(200,100);
+            ctx.lineTo(300,300);
+            ctx.closePath();
+            ctx.stroke();
+
+            //練習4:畫一個多邊形
+            ctx.beginPath();
+            ctx.moveTo(300,300);
+            ctx.lineTo(400,350);
+            ctx.lineTo(250,400);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        </script>
+
+        <style type="text/css"> 
+ 
+
+        </style>   
+    </head>
+    <body>
+        <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000">
+
+        </canvas>
+        
+    </body>
+
+</html>
+

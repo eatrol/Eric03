@@ -1,0 +1,46 @@
+<!--
+教學名稱: JSON 基本教學
+教學網址：https://www.youtube.com/watch?v=t7TSFImLa0U&t=4s
+
+Tag: #javascript
+
+Goal : JSON格式與字串互換
+    1. JSON.stringify(xxx)      把xxx json格式 轉成 字串
+    2. JSON.parse(xxx)          把xxx 字串 轉成 JSON格式
+    
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">  
+
+        var point = {"x":3,"y":4,"get":function(){
+            alert(this.x+","+this.y);
+        }};
+
+        //point.get();
+
+
+        console.log(point);
+        var jsonstr= JSON.stringify(point); //把json格式轉成字串
+        console.log(jsonstr);
+
+        var planobj = JSON.parse(jsonstr);  //把字串轉回JSON格式,(會發現Get方法消失)
+        console.log(planobj);   
+
+        </script>
+        <style type="text/css"> 
+  
+    
+        </style>   
+    </head>
+
+    <body>
+
+    </body>
+
+</html>
+

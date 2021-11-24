@@ -1,0 +1,1086 @@
+<!--
+教學名稱: Placement小幫手
+Goal : 用canvas 做基本繪圖, 匯出相關設計參數
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>Placement 小幫手</title>
+
+
+        <style type="text/css">
+        .slider {
+            -webkit-appearance: none;
+            width: 250px;
+            height: 7px;
+            border-radius: 5px;  
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%; 
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .hide{
+            display:none;
+        }
+
+        .inpubox{
+            width:100px;
+        }
+
+        </style>
+
+        <script type="text/javascript">
+
+        var factor=5;
+        var connector ={"usbL":6,"usbW":15,"hdmiL":10,"hdmiW":20,"auxL":4,"auxW":4};
+
+        var data = {"boxL":6,"boxW":15,"boxT":10,"boxR":10,"lcmL":4,"lcmW":4,"lcmX":4,"lcmY":4,"lcmGap":4,
+                    "aaL":4,"aaW":4,"aaX":4,"aaY":4,
+                    "icon1count":4,"icon1size":4,"icon1gap":4,"icon1X":4,"icon1Y":4,
+                    "icon2count":4,"icon2size":4,"icon2gap":4,"icon2X":4,"icon2Y":4,
+                    "iowidth1":4,"ioheight1":4,"iowidth2":4,"ioheight2":4,
+                    "usbX1":4,"usbY1":4,"usbX2":4,"usbY2":4,"usbX3":4,"usbY3":4};
+
+        var colum = ["boxL","boxW","boxT","lcmL","lcmW","lcmX","lcmY","lcmGap","aaL","aaW","aaX","aaY",
+                    "icon1count","icon1size","icon1gap","icon1X","icon1Y",
+                    "icon2count","icon2size","icon2gap","icon2X","icon2Y",
+                    "iowidth1","ioheight1","iowidth2","ioheight2",
+                    "usbX1","usbY1","usbX2","usbY2","usbX3","usbY3"];
+
+        window.onload=function(){
+            
+            console.log(data);
+            console.log(colum);
+            righticon();
+         
+            //練習1:畫一個填滿方塊
+
+            // ctx.fillStyle="red";            // 設定畫布 填滿的顏色
+            // ctx.globalAlpha = 0.5;          // 設定畫布 透明度
+            // ctx.fillRect(50,50,100,100);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            // //練習2: 畫一個外框
+            // ctx.globalAlpha = 1;
+            // ctx.strokeStyle="blue";
+            // ctx.strokeRect(200,200,50,50);   // 設定畫布 填滿區間 (200,200) 長50/寬50
+
+            // //練習3:畫一條線
+            // ctx.beginPath();
+            // ctx.moveTo(200,100);
+            // ctx.lineTo(300,300);
+            // ctx.closePath();
+            // ctx.stroke();
+
+            // //練習4:畫一個多邊形
+            // ctx.beginPath();
+            // ctx.moveTo(300,300);
+            // ctx.lineTo(400,350);
+            // ctx.lineTo(250,400);
+            // ctx.closePath();
+            // ctx.fill();
+        
+
+ 
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            radius = {tl: radius, tr: radius, br: radius, bl: radius};
+            ctx.beginPath();
+            ctx.moveTo(x + radius.tl, y);
+            ctx.lineTo(x + width - radius.tr, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+            ctx.lineTo(x + width, y + height - radius.br);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+            ctx.lineTo(x + radius.bl, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+            ctx.lineTo(x, y + radius.tl);
+            ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawdimension(){
+            var cvs=document.getElementById("cvs");   
+            var ctx=cvs.getContext("2d"); 
+            var boxL = document.getElementById('boxL').value*factor;
+            var boxW = document.getElementById('boxW').value*factor;
+            var boxT = document.getElementById('boxT').value*factor;
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor;
+            var lcmX = document.getElementById('lcmX').value*factor;
+            var lcmY = document.getElementById('lcmY').value*factor;
+
+            ctx.font = '12pt Arial';
+            ctx.textAlign = 'center'
+            ctx.fillStyle="blue";
+
+            var dim1 = document.getElementById('dim1')
+            if(dim1.checked){
+                ctx.textAlign = 'center'
+                drawarrow(lcmX+lcmL,lcmY+0.5*lcmW,boxL-boxT,lcmY+0.5*lcmW);
+                drawarrow(boxT,lcmY+0.5*lcmW,lcmX,lcmY+0.5*lcmW);
+
+                var dim = (boxL-boxT-lcmX-lcmL)/factor;
+                ctx.fillText(dim.toFixed(2), (lcmX+lcmL+boxL)/2, lcmY+0.5*lcmW-5)
+                var dim = (lcmX-boxT)/factor;
+                ctx.fillText(dim.toFixed(2), (boxT+lcmX)/2, lcmY+0.5*lcmW-5)
+            }
+
+            var dim2 = document.getElementById('dim2')
+            if(dim2.checked){
+                ctx.textAlign = 'start'
+                drawarrow(lcmX+0.5*lcmL,boxT,lcmX+0.5*lcmL,lcmY);
+                drawarrow(lcmX+0.5*lcmL,lcmY+lcmW,lcmX+0.5*lcmL,boxW-boxT);
+                var dim = (lcmY-boxT)/factor;
+                ctx.fillText(dim.toFixed(2), lcmX+0.5*lcmL+5, (boxT+lcmY)/2)
+                var dim = (boxW-boxT-lcmY-lcmW)/factor;
+                ctx.fillText(dim.toFixed(2), lcmX+0.5*lcmL+5, (lcmY+lcmW+boxW-boxT)/2)
+            }
+        }
+
+
+        function drawarrow(x1, y1, x2, y2){
+            var cbx=document.getElementById("cvs").getContext("2d");   
+            //var cbx=cvs.getContext("2d"); 
+            cbx.strokeStyle="blue";
+            cbx.beginPath();
+            canvas_arrow(cbx, x1, y1, x2, y2);
+            canvas_arrow(cbx, x2, y2, x1, y1);
+            cbx.stroke();
+        }
+
+
+        function canvas_arrow(context, fromx, fromy, tox, toy) {
+            var headlen = 10; // length of head in pixels
+            var dx = tox - fromx;
+            var dy = toy - fromy;
+            var angle = Math.atan2(dy, dx);
+            context.moveTo(fromx, fromy);
+            context.lineTo(tox, toy);
+            context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+            context.moveTo(tox, toy);
+            context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+        }
+
+
+	    function writetxt(){
+		    var content = "What's up , hello world";
+		    // any kind of extension (.txt,.cpp,.cs,.bat)
+		    var filename = "hello.txt";
+
+		    var blob = new Blob([content], {
+ 			    type: "text/plain;charset=utf-8"
+		    });
+        
+            var aaa =""
+            for(var i = 0; i< colum.length; i++){
+                var bbb = document.getElementById(colum[i]).value;
+                aaa = aaa + bbb + "\n";
+            }
+		    download("toCatia.txt",aaa);		
+
+	        function download(filename, text) {
+  		        var element = document.createElement('a');
+ 		        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  		        element.setAttribute('download', filename);
+ 		        element.style.display = 'none';
+  		        document.body.appendChild(element);
+  		        element.click();
+  		        document.body.removeChild(element);
+            }      
+	    };
+     
+
+        function drawbox(cvs,ctx){
+            var boxL = document.getElementById('boxL').value*factor;
+            var boxW = document.getElementById('boxW').value*factor;
+            var boxT = document.getElementById('boxT').value*factor;
+    
+            cvs.width = boxL
+            cvs.height = boxW
+
+            // 設定灰色區間
+            ctx.fillStyle="gray";            // 設定畫布 填滿的顏色
+            ctx.globalAlpha = 0.8;          // 設定畫布 透明度
+            ctx.fillRect(0,0,boxL,boxW);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            // 設定白色區域 
+            ctx.fillStyle="white";            // 設定畫布 填滿的顏色
+            ctx.globalAlpha = 1;              // 設定畫布 透明度
+            roundRect(ctx,boxT,boxT,cvs.width-2*boxT,cvs.height-2*boxT,20);   // 畫出肉厚內區域
+            
+        };
+
+
+        function drawdisplay(ctx){
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor;
+            var lcmX = document.getElementById('lcmX').value*factor;
+            var lcmY = document.getElementById('lcmY').value*factor;
+            var aaL = document.getElementById('aaL').value*factor;
+            var aaW = document.getElementById('aaW').value*factor;
+            var aaX = document.getElementById('aaX').value*factor;
+            var aaY = document.getElementById('aaY').value*factor;
+
+            var boxT = document.getElementById('boxT').value*factor;
+            var boxW = document.getElementById('boxW').value*factor;
+            var boxL = document.getElementById('boxL').value*factor;
+            var lcmGap = document.getElementById('lcmGap').value*factor;
+
+            // 設定LCM Ｘ軸邊界
+            var slide = document.getElementById('lcmXslide');
+            slide.min = boxT + lcmGap ;
+            slide.max = boxL - boxT - lcmL - lcmGap ;
+            middle1 = 0.5*slide.min + 0.5*slide.max;
+            
+            // 設定LCM Ｙ軸邊界
+            var slide = document.getElementById('lcmYslide');
+            slide.min = boxT + lcmGap;
+            slide.max = boxW - boxT - lcmW - lcmGap;
+            middle1 = 0.5*slide.min + 0.5*slide.max;
+        
+            //畫出LCM本體的位置
+            ctx.globalAlpha = 1;
+            ctx.fillStyle="black";
+            roundRect(ctx,lcmX,lcmY,lcmL,lcmW,10);   //  畫出LCM 本體位置
+
+            // 畫出AA區的位置
+            ctx.globalAlpha = 0.9;
+            ctx.fillStyle="#eeeeee";
+            ctx.fillRect(lcmX+aaX*1,lcmY+aaY*1,aaL*1,aaW*1);   // 畫出AA區位置
+
+            //
+            var imgObj = new Image();
+            //var pk =1 ;
+            if (cg1.checked){  
+                imgObj.src = "home.png";
+                ctx.drawImage(imgObj,lcmX+aaX*1,lcmY+aaY*1,aaL*1,aaW*1);
+            };
+
+        };
+
+        function slidebar(pk1,pk2,pk3){
+            var slider = document.getElementById(pk1);
+            var bbb = document.getElementById(pk2);
+            bbb.value = slider.value/factor;
+            righticon();
+        };
+
+        function centeraa(pk1,pk2,pk3,pk4,pk5){
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var lcmL = document.getElementById(pk1).value*factor;
+            var aaL = document.getElementById(pk2).value*factor;
+            var aaX = document.getElementById(pk3).value*factor;
+            var slide = document.getElementById(pk4);
+            
+    
+            middle = 0.5*slide.min + 0.5*slide.max;
+            middle = middle - ((aaX+aaX+aaL)/2-lcmL/2);
+            slide.value = middle;
+            slidebar(pk4,pk5); 
+        };
+
+
+        function drawicon1(){
+            
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var icon1count = document.getElementById('icon1count').value*1;
+            var icon1size = document.getElementById('icon1size').value*factor;
+            var icon1gap = document.getElementById('icon1gap').value*factor;
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor; 
+            var lcmXslide = document.getElementById('lcmXslide');
+            var lcmYslide = document.getElementById('lcmYslide'); 
+            var slidemin3 = document.getElementById('slidemin3'); 
+            var slidemin4 = document.getElementById('slidemin4'); 
+            var slidemax3 = document.getElementById('slidemax3'); 
+            var slidemax4 = document.getElementById('slidemax4'); 
+            var lcmGap = document.getElementById('lcmGap').value*factor;
+            
+
+            ctx.strokeStyle="black";
+            
+            var slide = document.getElementById('icon1Xslide');
+            slide.min = lcmXslide.value*1 + lcmL +icon1size + lcmGap ;
+            slide.max = lcmXslide.max*1 + lcmL - icon1size;
+            slidemin3.innerHTML = ((slide.value - slide.min + lcmGap )/factor).toFixed(2)
+            slidemax3.innerHTML = ((slide.max - slide.value + lcmGap )/factor).toFixed(2)
+
+            var slide2 = document.getElementById('icon1Yslide');
+            slide2.min = lcmYslide.min*1+icon1size*1 ;
+            slide2.max = lcmYslide.max*1 + lcmW - icon1size*1 - icon1gap*(icon1count-1) ;
+            slidemin4.innerHTML = ((slide2.value - slide2.min + lcmGap)/factor).toFixed(2)
+            slidemax4.innerHTML = ((slide2.max - slide2.value + lcmGap)/factor).toFixed(2)
+
+            for(var i=0;i<icon1count;i++){
+                ctx.beginPath();
+                ctx.arc(slide.value, slide2.value*1+i*icon1gap, icon1size, 0, 2*Math.PI);
+                ctx.stroke();
+            };
+        }
+
+        function drawicon2(){
+            
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var icon1count = document.getElementById('icon2count').value*1;
+            var icon1size = document.getElementById('icon2size').value*factor;
+            var icon1gap = document.getElementById('icon2gap').value*factor;
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor; 
+            var lcmXslide = document.getElementById('lcmXslide');
+            var lcmYslide = document.getElementById('lcmYslide'); 
+            var slidemin5 = document.getElementById('slidemin5'); 
+            var slidemin6 = document.getElementById('slidemin6'); 
+            var slidemax5 = document.getElementById('slidemax5'); 
+            var slidemax6 = document.getElementById('slidemax6'); 
+            var lcmGap = document.getElementById('lcmGap').value*factor;
+
+            ctx.strokeStyle="black";
+            
+            var slide = document.getElementById('icon2Xslide');
+            slide.min = lcmXslide.min*1 + icon1size*1;
+            slide.max = lcmXslide.value*1 - icon1size - lcmGap;
+            slidemin5.innerHTML = ((slide.value - slide.min + lcmGap)/factor).toFixed(2)
+            slidemax5.innerHTML = ((slide.max - slide.value + lcmGap)/factor).toFixed(2)
+
+            var slide2 = document.getElementById('icon2Yslide');
+            slide2.min = lcmYslide.min*1+icon1size*1 ;
+            slide2.max = lcmYslide.max*1 + lcmW - icon1size*1 - icon1gap*(icon1count-1) ;
+            slidemin6.innerHTML = ((slide2.value - slide2.min + lcmGap)/factor).toFixed(2)
+            slidemax6.innerHTML = ((slide2.max - slide2.value + lcmGap)/factor).toFixed(2)
+
+            // 畫出IO的位置
+            for(var i=0;i<icon1count;i++){
+                ctx.beginPath();
+                ctx.arc(slide.value, slide2.value*1+i*icon1gap, icon1size, 0, 2*Math.PI);
+                ctx.stroke();
+            };
+
+        }
+
+        function righticon(){
+            var cvs=document.getElementById("cvs");   
+            var ctx=cvs.getContext("2d"); 
+
+            drawbox(cvs,ctx);
+            drawdisplay(ctx);
+            
+            if(crighticon.checked){
+                 drawicon1();
+                 menu1.style.display= "block";
+            } else {
+                 menu1.style.display = "none";
+            }
+            if(clefticon.checked){
+                drawicon2();
+                menu2.style.display= "block";
+            } else {
+                menu2.style.display = "none";
+            }
+
+            if(crightio.checked){
+                drawio(1);
+                menu3.style.display= "block";
+            } else {
+                menu3.style.display = "none";
+            }
+
+            if(cleftio.checked){
+                drawio(2);
+                menu4.style.display= "block";
+            } else {
+                menu4.style.display = "none";
+            }
+
+            for(var i=1;i<=3;i++){
+                var menu= document.getElementById("menu0"+i);
+                var usbselect = document.getElementById("usbselect"+i).value;
+                var connselect = document.getElementById("connselect"+i).value;
+                var usb = document.getElementById("usb"+i)
+
+                if(usb.checked){
+                    drawusb(connselect,usbselect,'usbXslide'+i,'usbYslide'+i);
+                    menu.style.display= "block";
+                } else {
+                    menu.style.display = "none";
+                }
+            };
+
+            drawdimension();
+        };
+
+        function centericon(pk1,pk2){
+            var slide = document.getElementById(pk1);
+            var icon2 = document.getElementById(pk2)
+            slide.value = (slide.min*0.5 + slide.max*0.5);
+            icon2.value = slide.value/factor;
+            righticon();
+        };
+
+        function drawio(pk){
+            var ctx=document.getElementById("cvs").getContext("2d");  
+            //var ctx=cvs.getContext("2d");
+            var boxL = document.getElementById('boxL').value*factor;
+            var boxW = document.getElementById('boxW').value*factor;
+            var boxT = document.getElementById('boxT').value*factor;
+            var lcmGap = document.getElementById('lcmGap').value*factor;
+
+            var iowidth1slide = document.getElementById('iowidth1slide');
+
+            var iowidth2slide = document.getElementById('iowidth2slide');
+
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor; 
+            var lcmX = document.getElementById('lcmX').value*factor;
+            var lcmY = document.getElementById('lcmY').value*factor; 
+
+            // 畫出右側IO範圍
+            if(pk==1){
+                var bbb = document.getElementById('iowidth1');
+                bbb.value = iowidth1slide.value/factor;
+                var iowidth = document.getElementById('iowidth1').value*factor;
+                var ioheight = document.getElementById('ioheight1').value*factor;
+                var slidemin1 = document.getElementById('slidemin7');
+                var slidemin2 = document.getElementById('slidemin8');                
+
+                iowidth1slide.max = boxL - lcmL -lcmX - 2*boxT;
+                
+                var xxx = boxL - iowidth - boxT;     // 繪畫的起始點X座標 
+                var yyy = boxW - ioheight - boxT;    // 繪畫的起始點Y座標
+                
+            };
+
+            // 畫出左側IO範圍
+            if(pk==2){
+                var bbb = document.getElementById('iowidth2');
+                bbb.value = iowidth2slide.value/factor;
+                var iowidth = document.getElementById('iowidth2').value*factor;
+                var ioheight = document.getElementById('ioheight2').value*factor;
+                var slidemin1 = document.getElementById('slidemin9');
+                var slidemin2 = document.getElementById('slidemin10'); 
+
+                iowidth2slide.max = lcmX - 2*boxT;
+                
+                var xxx = boxT;                            // 繪畫的起始點X座標 
+                var yyy = boxW - ioheight - boxT;    // 繪畫的起始點Y座標 
+                
+            };
+
+            slidemin1.innerHTML = (xxx/factor).toFixed(2);
+            slidemin2.innerHTML = (yyy/factor).toFixed(2);
+            
+
+            ctx.fillStyle="gray";            
+            ctx.globalAlpha = 0.8;           
+            ctx.fillRect(xxx-boxT,yyy-boxT,iowidth+boxT*2,ioheight+boxT*2);   // 畫出深灰色編框 
+
+            ctx.fillStyle="#dddddd";           
+            ctx.globalAlpha = 0.95;             
+            ctx.fillRect(xxx,yyy,iowidth,ioheight);    // 畫出淡灰色區間
+        };
+
+
+
+        function drawusb(pk1,pk2,name1,name2){
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var usbXslide = document.getElementById(name1);
+            var usbYslide = document.getElementById(name2);
+
+            
+            var boundX = document.getElementById('slidemin7').innerHTML*factor;
+            var boundY = document.getElementById('slidemin8').innerHTML*factor;
+            var slidemin9 = document.getElementById('slidemin9').innerHTML*factor;
+            var slidemin10 = document.getElementById('slidemin10').innerHTML*factor;
+
+            var iowidth1 = document.getElementById('iowidth1').value*factor;
+            var ioheight1 = document.getElementById('ioheight1').value*factor;
+
+            var iowidth2 = document.getElementById('iowidth2').value*factor;
+            var ioheight2 = document.getElementById('ioheight2').value*factor;
+            //var usbX = document.getElementById('usbX1').value*factor;
+            //var usbY = document.getElementById('usbY1').value*factor;
+
+            //選擇哪一種IO connector ------------
+            // USB
+            var imgObj = new Image();
+            if (pk1==1){  
+                imgObj.src = "usb.png";
+                var usbL = connector["usbL"]*factor;
+                var usbW = connector["usbW"]*factor;
+            };
+
+            // HDMI
+            if (pk1==2){  
+                imgObj.src = "hdmi.png";
+                var usbL = connector["hdmiL"]*factor;
+                var usbW = connector["hdmiW"]*factor;
+            };
+
+            if (pk1==3){  
+                imgObj.src = "aux.png";
+                var usbL = connector["auxL"]*factor;
+                var usbW = connector["auxW"]*factor;
+            };
+
+            //選擇哪一側IO ------------
+            //右側IO區
+            if (pk2==1){  
+                usbXslide.min = boundX ;
+                usbXslide.max = boundX + iowidth1 - usbL;
+                usbYslide.min = boundY;
+                usbYslide.max = boundY + ioheight1 - usbW;
+            }
+            //左側IO區
+            if (pk2==2){
+                usbXslide.min = slidemin9 ;
+                usbXslide.max = slidemin9 + iowidth2 - usbL;
+                usbYslide.min = slidemin10;
+                usbYslide.max = slidemin10 + ioheight2 - usbW;
+            }
+
+            // ctx.fillStyle="white";            
+            // ctx.globalAlpha = 1;           
+            // ctx.fillRect(usbXslide.value,usbYslide.value,usbL,usbW);   // 畫出深灰色編框 
+
+            ctx.drawImage(imgObj, usbXslide.value,usbYslide.value,usbL,usbW);
+        };
+
+        </script>
+
+   
+    </head>
+    <body>
+
+        <canvas id="c" width=300 height=300></canvas>
+
+
+        <table><tr><td>
+        <div style="height:800px;width:420px; overflow:scroll">
+        <button onclick="rrr();">旋轉</button>
+        <!----------------＊＊＊＊＊＊＊＊ 螢幕大小, A-Ａ區大小 ＊＊＊＊＊＊＊＊--------------------->
+        <table>
+            <tr>
+                <td><li>主機長度(boxL) ：</li></td>
+                <td><input class="inpubox" id="boxL" value=230 onchange="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>主機高度(boxW) ：</li></td>
+                <td><input class="inpubox" id="boxW" value=130 onchange="righticon();"></td>
+            </tr>
+            <tr>
+                <td><li>塑膠肉厚(boxT) ：</li></td>
+                <td><input class="inpubox" id="boxT" value=1 onchange="righticon();"></td>
+            </tr>
+        </table>
+        <hr>
+         <!------------------------------------------------------>
+
+ 
+        <!----------------＊＊＊＊＊＊＊＊ 螢幕大小, A-Ａ區大小 ＊＊＊＊＊＊＊＊--------------------->
+        <table>
+            <tr>
+                <td><li>螢幕間隙(lcmGap) ：</li></td>
+                <td><input class="inpubox" id="lcmGap" value=0.4 disabled="" onchange="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>螢幕長(lcmL) ：</li></td>
+                <td><input class="inpubox" id="lcmL" value=190 oninput="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>螢幕寬(lcmW) ：</li></td>
+                <td><input class="inpubox" id="lcmW" value=105 onchange="righticon();"></td>
+            </tr>
+
+            <tr>
+                <td><li>A-A區長(aaL) ：</li></td>
+                <td><input class="inpubox" id="aaL" value=180 onchange="righticon();"></td>
+            </tr>
+            <tr>
+                <td><li>A-A區寬(aaＷ)：</li></td>
+                <td><input class="inpubox" id="aaW" value=90 onchange="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>A-A區X(aaX) ：</li></td>
+                <td><input class="inpubox" id="aaX" value=3 onchange="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>A-A區Y(aaY) ：</li></td>
+                <td><input class="inpubox" id="aaY" value=4 onchange="righticon();"></td> 
+            </tr>   
+        </table>
+        <hr>
+        <!------------------------------------------------------>
+
+
+        <!----------------＊＊＊＊＊＊＊＊ 螢幕位置 ＊＊＊＊＊＊＊＊--------------------->
+        <span>Display</span><input type="checkbox" id="cg1" onchange="righticon();" style="margin-left:30px;" ><span>彩圖</span><br>
+        <div id="menu0">
+        <table>
+            <tr>
+                <td><li>螢幕距離X(lcmX) ：</li></td>
+                <td><input class="inpubox" id="lcmX" value=5 onchange="righticon();"></td>
+                <td><input type="checkbox" id="dim1" onchange="righticon();" ><span>Open</span></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slidemin1">1</td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="1" max="100" value="10" class="slider" id="lcmXslide" oninput="slidebar('lcmXslide','lcmX','1')">  
+                </td></div>
+                <td id="slidemax1" style="width:50px">100 </td>
+            </tr>
+        </table>
+        <button onclick="centeraa('lcmL','aaL','aaX','lcmXslide','lcmX');" style="margin-left: 25px; margin-top:8px">A-A區置中(X軸)</button>
+        <table>
+            <tr>
+                <td><li>螢幕距離Y(lcmY) ：</li></td>
+                <td><input class="inpubox" id="lcmY" value=5 onchange="righticon();"></td>
+                <td><input type="checkbox" id="dim2" onchange="righticon();"><span>Open</span></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slidemin2">1</td>
+                <td><div class="slidecontainer">    
+                        <input type="range" min="1" max="100" value="10" class="slider" id="lcmYslide" oninput="slidebar('lcmYslide','lcmY','2')">               
+                </td></div>
+                <td id="slidemax2" style="width:50px">100 </td>
+                
+            </tr>
+        </table>
+        <button onclick="centeraa('lcmW','aaW','aaY','lcmYslide','lcmY');" style="margin-left: 25px; margin-top:8px">A-A區置中(Y軸)</button>
+
+
+        </div>
+        <hr>
+        <!------------------------------------------------------>
+
+
+        <!----------------＊＊＊＊＊＊＊＊按鍵＊＊＊＊＊＊＊＊--------------------->
+         <!---------------右側按鍵 --------------------->
+
+        <input id="crighticon" type="checkbox" onchange="righticon();"><span>右側按鍵</span>
+
+
+        <div class="hide" id="menu1" style="padding-left: 20px;">
+        <table>
+            <tr>
+                <td><li>按鍵數量(icon1count)：</li></td>
+                <td><input class="inpubox" id="icon1count" value=3 onchange="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>按鍵大小(icon1size)：</li></td>
+                <td><input class="inpubox" id="icon1size" value=5 onchange="righticon();"></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><li>按鍵間距(icon1gap)：</li></td>
+                <td><input class="inpubox" id="icon1gap" value=15 onchange="righticon();"></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;">5 </td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="25" max="200" value="10" class="slider" id="icon1Gslide" oninput="slidebar('icon1Gslide','icon1gap','3');">
+                </div></td>
+                <td style="width:50px">40</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><li>按鍵距離X(icon1X) ：</li></td>
+                <td><input class="inpubox" id="icon1X" value=20 disabled></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slidemin3">1 </td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="1" max="100" value="10" class="slider" id="icon1Xslide" oninput="slidebar('icon1Xslide','icon1X','3');">
+                </div></td>
+                <td style="width:50px" id="slidemax3">100</td>
+            </tr>
+        </table>
+        <button onclick="centericon('icon1Xslide','icon1X');" style="margin-left: 25px; margin-top:8px">水平置中</button>
+        <table>
+            <tr>
+                <td><li>按鍵距離Y(icon1Y) ：</li></td>
+                <td><input class="inpubox" id="icon1Y" value=5 disabled></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slidemin4">1 </td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="5" max="30" value="10" class="slider" id="icon1Yslide" oninput="slidebar('icon1Yslide','icon1Y','4');"> 
+                </div></td>
+                <td style="width:50px" id="slidemax4">100</td>
+            </tr>
+        </table>
+        <button onclick="centericon('icon1Yslide','icon1Y');" style="margin-left: 25px; margin-top:8px">垂直置中</button>
+        </div>
+        <br>
+        <!-------------------------------------------------------------------------->
+       
+        <!---------------左側按鍵 ---------------------------------------------------->
+        <input id="clefticon" type="checkbox" onchange="righticon();"><span>左側按鍵</span>
+        
+        <div id="menu2" style="padding-left: 20px;">
+        <table>
+            <tr>
+                <td><li>按鍵數量(icon2count)：</li></td>
+                <td><input class="inpubox" id="icon2count" value=3 onchange="righticon();"></td> 
+            </tr>
+            <tr>
+                <td><li>按鍵大小(icon2size)：</li></td>
+                <td><input class="inpubox" id="icon2size" value=5 onchange="righticon();"></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><li>按鍵間距(icon2gap)：</li></td>
+                <td><input class="inpubox" id="icon2gap" value=15 onchange="righticon();"></td> 
+            </tr>
+        </table>
+        <table><tr>
+            <td style="width:40px;padding-left: 25px;" >5 </td>
+            <td><div class="slidecontainer">
+                <input type="range" min="25" max="200" value="50" class="slider" id="icon2Gslide" oninput="slidebar('icon2Gslide','icon2gap','5');">
+            </div></td>
+            <td style="width:50px" >40</td>
+        </tr>
+        </table>
+
+
+
+
+        <table>
+            <tr>
+                <td><li>按鍵距離X(icon2X) ：</li></td>
+                <td><input class="inpubox" id="icon2X" value=20 disabled></td>
+            </tr>
+        </table>
+        <table><tr>
+                    <td style="width:40px;padding-left: 25px;" id="slidemin5">1 </td>
+                    <td><div class="slidecontainer">
+                        <input type="range" min="1" max="100" value="10" class="slider" id="icon2Xslide" oninput="slidebar('icon2Xslide','icon2X','5');">
+                    </div></td>
+                    <td style="width:50px" id="slidemax5">100</td>
+                </tr>
+        </table>
+                
+        <button onclick="centericon('icon2Xslide','icon2X');" style="margin-left: 25px; margin-top:8px">水平置中</button>
+        <table>
+            <tr>
+                <td><li>按鍵距離Y(icon2Y) ：</li></td>
+                <td><input class="inpubox" id="icon2Y" value=5 disabled ></td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                    <td style="width:40px;padding-left: 25px;" id="slidemin6">1 </td>
+                    <td><div class="slidecontainer">
+                        <input type="range" min="5" max="30" value="10" class="slider" id="icon2Yslide" oninput="slidebar('icon2Yslide','icon2Y','6');">
+                    </div></td>
+                    <td style="width:50px" id="slidemax6">100</td>
+            </tr>
+        </table>
+        
+        <button onclick="centericon('icon2Yslide','icon2Y');" style="margin-left: 25px; margin-top:8px">垂直置中</button>
+
+        </div>
+        <hr>
+        <!------------------------------------------------------>
+
+
+        <!----------------＊＊＊＊＊＊＊＊IO區間＊＊＊＊＊＊＊＊--------------------->
+         <!---------------左側IO --------------------->
+        
+        <input id="crightio" type="checkbox" onchange="righticon();"><span>右側IO</span>
+        <div id="menu3" style="padding-left: 20px;">
+        <table>
+            <tr>
+                <td><li>右側IO寬度(iowidth1)：</li></td>
+                <td><input class="inpubox" id="iowidth1" value=20 onchange="righticon();" disabled></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slidemin7"></td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="20" max="150" value="30" class="slider" id="iowidth1slide" oninput="slidebar('iowidth1slide','iowidth1','7');"> 
+                </div></td>
+                <td style="width:50px" id="slidemax7"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><li>右側IO高度(ioheight1)：</li></td>
+                <td><input class="inpubox" id="ioheight1" value=40 onchange="righticon();" disabled></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                    <td style="width:40px;padding-left: 25px;" id="slidemin8"></td>
+                    <td><div class="slidecontainer">
+                        <input type="range" min="100" max="400" value="50" class="slider" id="ioheight1slide" oninput="slidebar('ioheight1slide','ioheight1','8');"> 
+                    </div></td>
+                    <td style="width:50px" id="slidemax8"></td>
+            </tr>
+        </table>
+        </div>
+        <br>
+         <!--------------------------------------->
+
+        <!---------------左側IO --------------------->
+        
+        <input id="cleftio" type="checkbox" onchange="righticon();"><span>左側IO</span>
+
+        <div id="menu4" style="padding-left: 20px;">
+        <table>
+            <tr>
+                <td><li>左側IO寬度(iowidth2)：</li></td>
+                <td><input class="inpubox" id="iowidth2" value=20 onchange="righticon();" disabled></td> 
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                    <td style="width:40px;padding-left: 25px;" id="slidemin9"></td>
+                    <td><div class="slidecontainer">
+                        <input type="range" min="20" max="150" value="30" class="slider" id="iowidth2slide" oninput="slidebar('iowidth2slide','iowidth2','9');"> 
+                    </div></td>
+                    <td style="width:50px" id="slidemax9"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><li>左側IO高度(ioheight2)：</li></td>
+                <td><input class="inpubox" id="ioheight2" value=40 onchange="righticon();" disabled></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slidemin10"></td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="100" max="400" value="50" class="slider" id="ioheight2slide" oninput="slidebar('ioheight2slide','ioheight2','10');"> 
+                </div></td>
+                <td style="width:50px" id="slidemax10"></td>
+            </tr>
+        </table>
+        </div>
+        <hr>
+
+        <!----------------------------------------------->
+
+
+        <!-----＊＊＊＊＊＊＊＊IO連接器 ＊＊＊＊＊＊＊＊----------------------------->
+         <!---------------連接器1 (usb1)---------------------------->
+
+        <input id="usb1" type="checkbox" onchange="righticon();"><span>IO連接器1</span>
+        <select id="connselect1" onchange="righticon();">
+            <option value="1">USB</option>
+            <option value="2">HDMI</option>
+            <option value="3">AUX</option>
+          </select>
+
+
+        <select name="cars" id="usbselect1" onchange="righticon();">
+            <option value="1">右側IO</option>
+            <option value="2">左側IO</option>
+          </select>
+
+        <div id="menu01" style="padding-left: 20px;">
+        <table>
+            <tr>
+                <td><li>位置X(usbX1)：</li></td>
+                <td><input class="inpubox" id="usbX1" value=20  disabled></td> 
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                    <td style="width:40px;padding-left: 25px;" id="slideUSBmin11"></td>
+                    <td><div class="slidecontainer">
+                        <input type="range" min="100" max="600" value="200" class="slider" id="usbXslide1" oninput="slidebar('usbXslide1','usbX1','9');"> 
+                    </div></td>
+                    <td style="width:50px" id="slideUSBmax11"></td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td><li>位置Y(usbY1)：</li></td>
+                <td><input class="inpubox" id="usbY1" value=40 disabled></td> 
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td style="width:40px;padding-left: 25px;" id="slideUSBmin12"></td>
+                <td><div class="slidecontainer">
+                        <input type="range" min="100" max="600" value="200" class="slider" id="usbYslide1" oninput="slidebar('usbYslide1','usbY1','10');"> 
+                </div></td>
+                <td style="width:50px" id="slideUSBmax12"></td>
+            </tr>
+        </table>
+        </div>
+        <br>
+        <!------------------------------------------------->
+
+        <!---------------連接器2---------------------------->
+        <input id="usb2" type="checkbox" onchange="righticon();"><span>IO連接器2</span>
+        <select id="connselect2" onchange="righticon();">
+            <option value="1">USB</option>
+            <option value="2">HDMI</option>
+            <option value="3">AUX</option>
+          </select>
+
+
+        <select name="cars" id="usbselect2" onchange="righticon();">
+            <option value="1">右側IO</option>
+            <option value="2">左側IO</option>
+          </select>
+
+
+        <div id="menu02" style="padding-left: 20px;">
+            <table>
+                <tr>
+                    <td><li>位置X(usbX2)：</li></td>
+                    <td><input class="inpubox" id="usbX2" value=20  disabled></td> 
+                </tr>
+            </table>
+    
+            <table>
+                <tr>
+                        <td style="width:40px;padding-left: 25px;" id="slideUSBmin21"></td>
+                        <td><div class="slidecontainer">
+                            <input type="range" min="100" max="600" value="200" class="slider" id="usbXslide2" oninput="slidebar('usbXslide2','usbX2','9');"> 
+                        </div></td>
+                        <td style="width:50px" id="slideUSBmax21"></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td><li>位置Y(usbY2)：</li></td>
+                    <td><input class="inpubox" id="usbY2" value=40 disabled></td> 
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td style="width:40px;padding-left: 25px;" id="slideUSBmin22"></td>
+                    <td><div class="slidecontainer">
+                            <input type="range" min="100" max="600" value="200" class="slider" id="usbYslide2" oninput="slidebar('usbYslide2','usbY2','10');"> 
+                    </div></td>
+                    <td style="width:50px" id="slideUSBmax22"></td>
+                </tr>
+            </table>
+        </div>
+
+        <br>
+        <!------------------------------------------------->
+
+
+        <!---------------連接器3---------------------------->
+        <input id="usb3" type="checkbox" onchange="righticon();"><span>IO連接器3</span>
+        <select id="connselect3" onchange="righticon();">
+            <option value="1">USB</option>
+            <option value="2">HDMI</option>
+            <option value="3">AUX</option>
+          </select>
+
+
+        <select name="cars" id="usbselect3" onchange="righticon();">
+            <option value="1">右側IO</option>
+            <option value="2">左側IO</option>
+          </select>
+
+
+        <div id="menu03" style="padding-left: 20px;">
+            <table>
+                <tr>
+                    <td><li>位置X(usbX3)：</li></td>
+                    <td><input class="inpubox" id="usbX3" value=20  disabled></td> 
+                </tr>
+            </table>
+            
+            <table>
+                <tr>
+                        <td style="width:40px;padding-left: 25px;" id="slideUSBmin31"></td>
+                        <td><div class="slidecontainer">
+                            <input type="range" min="100" max="600" value="200" class="slider" id="usbXslide3" oninput="slidebar('usbXslide3','usbX3','9');"> 
+                        </div></td>
+                        <td style="width:50px" id="slideUSBmax31"></td>
+                </tr>
+            </table>
+
+            <button onclick="centericon('usbXslide3','usbX3');" style="margin-left: 25px; margin-top:8px">水平置中</button>
+            <table>
+                <tr>
+                    <td><li>位置Y(usbY3)：</li></td>
+                    <td><input class="inpubox" id="usbY3" value=40 disabled></td> 
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td style="width:40px;padding-left: 25px;" id="slideUSBmin32"></td>
+                    <td><div class="slidecontainer">
+                            <input type="range" min="100" max="600" value="200" class="slider" id="usbYslide3" oninput="slidebar('usbYslide3','usbY3','10');"> 
+                    </div></td>
+                    <td style="width:50px" id="slideUSBmax32"></td>
+                </tr>
+            </table>
+            <button onclick="centericon('usbYslide3','usbY3');" style="margin-left: 25px; margin-top:8px">垂直置中</button>
+        </div>
+
+        <hr>
+        <!--------------------------->
+        
+
+        <div id="demo1"><button onclick="writetxt();">匯出檔案</button></div>
+    
+
+        </div>
+
+        </td>
+        <td >
+            <div style="margin-left:20px">
+                <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000;border-radius: 20px;"></canvas>
+            </div>
+        </td>
+    </tr></table>
+        
+
+    
+    </body>
+
+</html>
+

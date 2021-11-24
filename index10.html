@@ -1,0 +1,63 @@
+<!--
+教學名稱: 影音播放與控制
+教學網址：https://www.youtube.com/watch?v=FNUnGWz-rdA
+
+Tag: #javascript #canvas
+
+Goal : 影音播放控制
+    1. HTML增加一個input , onchange=xxxx() 設定觸發動作的函數loadfile()
+    2. xxx.data             取得照片每個pixel的資料
+    3. xxx.putImageData(...)把處理完的資料放回去
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        var vvv;
+        window.onload=function(){
+            vvv=document.getElementById("vvv");
+            vvv.addEventListener("timeupdate",updatetime);
+            vvv.addEventListener("vvvend",endtime);
+        };
+
+        function playvideo(){
+            vvv.play();
+        };
+        function pausevideo(){
+            vvv.pause();
+        };
+        function replyvideo(){
+            vvv.currentTime=0;
+            vvv.play();
+        };
+
+        function updatetime(){
+            var timer=document.getElementById("timer");
+            timer.innerHTML=vvv.currentTime + '/' +vvv.duration;
+        };
+        function endtime(){
+            alert("影片播放結束");
+        };
+
+        function test(){
+            console.log(this);
+        };
+
+        </script>
+        <style type="text/css"> 
+        </style>   
+    </head>
+    <body>
+     <!----   <video id="vvv" src="movie.mp4" controls> </video>  -->
+        <video id="vvv" src="movie.mp4" style="width:500px;"> </video><br>
+        <button onclick="playvideo();">PLAY</button>
+        <button onclick="pausevideo();">PAUSE</button>
+        <button onclick="replyvideo();">REPLY</button>
+        <span id="timer">sss</span>
+    </body>
+
+</html>
+

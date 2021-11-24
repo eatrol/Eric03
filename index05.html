@@ -1,0 +1,61 @@
+<!--
+教學名稱:網頁捲軸控制
+教學網址：https://www.youtube.com/watch?v=YVSrQAeyd6E
+Goal : 網頁捲軸
+    1.css 設定overflow屬性為 scroll
+    2.xxx.scrollTop = 30 , 捲軸停留在30像素的位置
+    3.windows.setInterval() ,設定每幾秒中執行一次某個function
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script>
+        // 利用HTML元件中的Scrollleft 和 scrolltop 屬性
+
+        var ttt;
+        window.onload=function(){
+            ttt=document.getElementById("box"); 
+            // 練習1:控制捲軸停留在30的位置
+            // ttt.scrollTop= 30;  
+
+            //練習2:自動捲動到底
+            window.setInterval(eric1,50);  // 排程函數
+        }
+
+        function eric1(){
+            ttt.scrollTop++;
+        } 
+
+
+        </script>
+
+        <style type="text/css"> 
+        .box{
+            background-color:#dddddd; 
+            width: 200px;
+            height: 100px;
+            border: 1px solid #000;
+            overflow: scroll;       /* 設定為scroll:捲軸 , hidden:超出範圍的會隱藏*/
+        }
+ 
+        </style>   
+    </head>
+    <body>
+        <div class="box" id="box">
+            <div> this is line 1 </div>
+            <div> this is line 2 </div>
+            <div> this is line 3 </div>
+            <div> this is line 4 </div>
+            <div> this is line 5 </div>
+            <div> this is line 6 </div>
+            <div> this is line 7 </div>
+            <div> this is line 8 </div>
+        </div>
+        
+    </body>
+
+</html>
+

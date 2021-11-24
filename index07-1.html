@@ -1,0 +1,373 @@
+<!--
+教學名稱:canvas 基本繪圖
+教學網址：https://www.youtube.com/watch?v=_isKwzD4xm8
+Goal : 用canvas 做基本繪圖
+    1. HTML 插入<canvas>  設定畫布
+    2.canvas 參數
+        xxx.fillStyle       定義顏色
+        xxx.globalApha      定義明度
+        xxx.fillRect(..)    填滿方塊
+        xxx.strokeStyle     定義邊框顏色
+        xxx.strokeRect(...) 畫方塊無填滿
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+
+
+        <style type="text/css">
+        .slider {
+            -webkit-appearance: none;
+            width: 300px;
+            height: 7px;
+            border-radius: 5px;  
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%; 
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        </style>
+
+        <script type="text/javascript">
+
+        var factor=5;
+
+
+        window.onload=function(){
+            
+            drawbox();
+            callcm();
+            //練習1:畫一個填滿方塊
+
+            // ctx.fillStyle="red";            // 設定畫布 填滿的顏色
+            // ctx.globalAlpha = 0.5;          // 設定畫布 透明度
+            // ctx.fillRect(50,50,100,100);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            // //練習2: 畫一個外框
+            // ctx.globalAlpha = 1;
+            // ctx.strokeStyle="blue";
+            // ctx.strokeRect(200,200,50,50);   // 設定畫布 填滿區間 (200,200) 長50/寬50
+
+            // //練習3:畫一條線
+            // ctx.beginPath();
+            // ctx.moveTo(200,100);
+            // ctx.lineTo(300,300);
+            // ctx.closePath();
+            // ctx.stroke();
+
+            // //練習4:畫一個多邊形
+            // ctx.beginPath();
+            // ctx.moveTo(300,300);
+            // ctx.lineTo(400,350);
+            // ctx.lineTo(250,400);
+            // ctx.closePath();
+            // ctx.fill();
+        }
+
+     
+
+        function drawbox(){
+            var cvs=document.getElementById("cvs");   
+            var ctx=cvs.getContext("2d"); 
+            var boxL = document.getElementById('boxL').value*factor;
+            var boxW = document.getElementById('boxW').value*factor;
+            var boxT = document.getElementById('boxT').value*factor;
+   
+
+ 
+            cvs.width = boxL
+            cvs.height = boxW
+
+            ctx.fillStyle="gray";            // 設定畫布 填滿的顏色
+            ctx.globalAlpha = 0.8;          // 設定畫布 透明度
+            ctx.fillRect(0,0,boxL,boxW);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            ctx.fillStyle="white";            // 設定畫布 填滿的顏色
+            ctx.globalAlpha = 1;              // 設定畫布 透明度
+            ctx.fillRect(boxT,boxT,cvs.width-2*boxT,cvs.height-2*boxT);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            drawdisplay();
+        };
+
+
+        function drawdisplay(){
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor;
+            var lcmX = document.getElementById('lcmX').value*factor;
+            var lcmY = document.getElementById('lcmY').value*factor;
+            var aaL = document.getElementById('aaL').value*factor;
+            var aaW = document.getElementById('aaW').value*factor;
+            var aaX = document.getElementById('aaX').value*factor;
+            var aaY = document.getElementById('aaY').value*factor;
+            var boxT = document.getElementById('boxT').value*factor;
+
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+
+            ctx.fillStyle="white";            // 設定畫布 填滿的顏色
+            ctx.globalAlpha = 1;              // 設定畫布 透明度
+            //alert(boxT);
+            ctx.fillRect(boxT,boxT,cvs.width-2*boxT,cvs.height-2*boxT);    // 設定畫布 填滿區間 (50,50) 長100/寬100
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle="black";
+            ctx.fillRect(lcmX,lcmY,lcmL,lcmW);   // 設定畫布 填滿區間 (200,200) 長50/寬50
+            ctx.globalAlpha = 1;
+            ctx.fillStyle="orange";
+            ctx.fillRect(lcmX+aaX*1,lcmY+aaY*1,aaL*1,aaW*1);   // 設定畫布 填滿區間 (200,200) 長50/寬50
+        };
+
+        function slidebar(pk1,pk2){
+            var slider = document.getElementById(pk1);
+            var bbb = document.getElementById(pk2);
+            bbb.value = slider.value/factor;
+            drawbox();
+        };
+
+
+
+
+        function callcm(){
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var boxL = document.getElementById('boxL').value*factor;
+            var boxW = document.getElementById('boxW').value*factor;
+            var boxT = document.getElementById('boxT').value*factor;
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor;
+            var lcmX = document.getElementById('lcmX').value*factor;
+            var lcmY = document.getElementById('lcmY').value*factor;
+            var lcmGap = document.getElementById('lcmGap').value*factor;
+
+            var slide = document.getElementById('lcmXslide');
+            slide.min = boxT + lcmGap ;
+            slide.max = boxL - boxT - lcmL - lcmGap ;
+            middle1 = 0.5*slide.min + 0.5*slide.max;
+            slide.value = middle1;
+            slidebar('lcmXslide','lcmX');
+            
+            var slide = document.getElementById('lcmYslide');
+            slide.min = boxT + lcmGap;
+            slide.max = boxW - boxT - lcmW - lcmGap;
+            middle1 = 0.5*slide.min + 0.5*slide.max;
+            slide.value = middle1;
+            slidebar('lcmYslide','lcmY');
+
+        };
+
+        function centeraa(pk1,pk2,pk3,pk4,pk5){
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var lcmL = document.getElementById(pk1).value*factor;
+            var aaL = document.getElementById(pk2).value*factor;
+            var aaX = document.getElementById(pk3).value*factor;
+            var slide = document.getElementById(pk4);
+            
+    
+            middle = 0.5*slide.min + 0.5*slide.max;
+            middle = middle - ((aaX+aaX+aaL)/2-lcmL/2);
+            slide.value = middle;
+            slidebar(pk4,pk5); 
+        };
+
+        function iconslidebar(pk1,pk2){
+            var slider = document.getElementById(pk1);
+            var bbb = document.getElementById(pk2);
+            bbb.value = slider.value/factor;
+            drawicon();
+        };
+
+        function drawicon(){
+            drawdisplay();
+            var cvs=document.getElementById("cvs");  
+            var ctx=cvs.getContext("2d");
+            var icon1count = document.getElementById('icon1count').value*1;
+            var icon1size = document.getElementById('icon1size').value*factor;
+            var icon1gap = document.getElementById('icon1gap').value*factor;
+            var lcmL = document.getElementById('lcmL').value*factor;
+            var lcmW = document.getElementById('lcmW').value*factor; 
+            var lcmXslide = document.getElementById('lcmXslide');
+            var lcmYslide = document.getElementById('lcmYslide'); 
+            
+
+            ctx.strokeStyle="red";
+            
+            var slide = document.getElementById('icon1Xslide');
+            slide.min = lcmXslide.value*1 + lcmL +icon1size ;
+            slide.max = lcmXslide.max*1 + lcmL - icon1size;
+
+            var slide2 = document.getElementById('icon1Yslide');
+            slide2.min = lcmYslide.min*1+icon1size*1 ;
+            slide2.max = lcmYslide.max*1 + lcmW - icon1size*1 - icon1gap*(icon1count-1) ;
+
+            for(var i=0;i<icon1count;i++){
+                ctx.beginPath();
+                ctx.arc(slide.value, slide2.value*1+i*icon1gap, icon1size, 0, 2*Math.PI);
+                ctx.stroke();
+            };
+        }
+
+        </script>
+
+        <style type="text/css"> 
+ 
+
+        </style>   
+    </head>
+    <body>
+        <div>
+        <table>
+        <tr>
+            <td><li>主機長度(boxL) ：</li></td>
+            <td><input id="boxL" value=230 onchange="drawbox();"></td> 
+        </tr>
+        <tr>
+            <td><li>主機高度(boxW) ：</li></td>
+            <td><input id="boxW" value=130 onchange="drawbox();"></td>
+        </tr>
+        <tr>
+            <td><li>塑膠肉厚(boxT) ：</li></td>
+            <td><input id="boxT" value=1 onchange="drawbox();"></td>
+        </tr>
+        </table>
+        <hr>
+
+ 
+        <table>
+            
+            <tr>
+                <td><li>螢幕間隙(lcmGap) ：</li></td>
+                <td><input id="lcmGap" value=0.4 disabled="" onchange="drawdisplay();"></td> 
+            </tr>
+            <tr>
+                <td><li>螢幕長(lcmL) ：</li></td>
+                <td><input id="lcmL" value=190 oninput="drawdisplay();"></td> 
+            </tr>
+            <tr>
+                <td><li>螢幕寬(lcmW) ：</li></td>
+                <td><input id="lcmW" value=105 onchange="drawdisplay();"></td>
+            </tr>
+
+            <tr>
+                <td><li>A-A區長(aaL) ：</li></td>
+                <td><input id="aaL" value=180 onchange="drawdisplay();"></td>
+            </tr>
+            <tr>
+                <td><li>A-A區寬(aaＷ)：</li></td>
+                <td><input id="aaW" value=90 onchange="drawdisplay();"></td> 
+            </tr>
+            <tr>
+                <td><li>A-A區X(aaX) ：</li></td>
+                <td><input id="aaX" value=3 onchange="drawdisplay();"></td> 
+            </tr>
+            <tr>
+                <td><li>A-A區Y(aaY) ：</li></td>
+                <td><input id="aaY" value=4 onchange="drawdisplay();"></td> 
+            </tr>
+            
+        </table>
+        <hr>
+        <button onclick="callcm();">CALCULATE</button>
+        <button onclick="centeraa('lcmL','aaL','aaX','lcmXslide','lcmX');">A-A區置中(X軸)</button>
+        <button onclick="centeraa('lcmW','aaW','aaY','lcmYslide','lcmY');">A-A區置中(Y軸)</button>
+        <table>
+            <tr>
+                <td><li>螢幕距離X(lcmX) ：</li></td>
+                <td><input id="lcmX" value=5 onchange="drawdisplay();"></td>
+                <td>
+                    <div class="slidecontainer">
+                        <span id="slide1min">1</span> <input type="range" min="1" max="100" value="10" class="slider" id="lcmXslide" oninput="slidebar('lcmXslide','lcmX')">
+                        <span id="slide1max">100</span> 
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><li>螢幕距離Y(lcmY) ：</li></td>
+                <td><input id="lcmY" value=5 onchange="drawdisplay();"></td>
+                <td>
+                    <div class="slidecontainer">
+                        <span id="slide2min">1</span> <input type="range" min="1" max="100" value="10" class="slider" id="lcmYslide" oninput="slidebar('lcmYslide','lcmY')">
+                        <span id="slide2max">100</span> 
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+        <hr>
+
+        <button onclick="drawicon();">產生右側按鍵</button>
+        <button onclick="drawdisplay();">CANCEL</button>
+        <table>
+            <tr>
+                <td><li>按鍵數量(icon1count)：</li></td>
+                <td><input id="icon1count" value=3 onchange="drawicon();"></td> 
+            </tr>
+            <tr>
+                <td><li>按鍵大小(icon1size)：</li></td>
+                <td><input id="icon1size" value=5 onchange="drawicon();"></td> 
+            </tr>
+            <tr>
+                <td><li>按鍵間距(icon1gap)：</li></td>
+                <td><input id="icon1gap" value=15 onchange="drawicon();"></td> 
+            </tr>
+
+            <tr>
+                <td><li>按鍵距離X(icon1X) ：</li></td>
+                <td><input id="icon1X" value=20></td>
+                <td>
+                    <div class="slidecontainer">
+                        <span id="slide3min">1</span> <input type="range" min="1" max="100" value="10" class="slider" id="icon1Xslide" oninput="iconslidebar('icon1Xslide','icon1X');">
+                        <span id="slide3max">100</span> 
+                    </div>
+                </td>
+            </tr><tr>
+                <td><li>按鍵距離Y(icon1Y) ：</li></td>
+                <td><input id="icon1Y" value=5 ></td>
+                <td>
+                    <div class="slidecontainer">
+                        <span id="slide4min">1</span> <input type="range" min="5" max="30" value="10" class="slider" id="icon1Yslide" oninput="iconslidebar('icon1Yslide','icon1Y');">
+                        <span id="slide4max">100</span> 
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+
+        <div id="demo1">30</div>
+    
+
+        </div>
+
+        <br>
+        <div>
+        <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000;border-radius: 20px;">
+        </div>
+        </canvas>
+        
+    </body>
+
+</html>
+

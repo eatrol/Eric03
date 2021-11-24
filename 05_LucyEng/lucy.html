@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000" onclick="coinsound.play();"></canvas>
+    <audio id="myaudio" src="https://s.yimg.com/bg/dict/dreye/live/m/making.mp3"></audio>
+
+    <script type="text/javascript">
+        var cvs=document.getElementById("cvs");
+        var ctx=cvs.getContext("2d");
+        // 載入資料庫
+        var lucy_word = "Truck"
+        var lucy_sound = "https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3"
+
+
+
+        window.onload= function() {
+            cvs.height = window.innerHeight;
+            cvs.width = window.innerWidth;
+
+
+            ctx.font = '200pt Calibri';
+            ctx.textAlign = 'center'
+            ctx.fillStyle="brown";
+            ctx.fillText(lucy_word, cvs.width/2, cvs.height/2);
+
+            coinsound = new sound(lucy_sound);
+
+
+            var img = new Image();
+            img.src= "lucy-sound.png";
+
+            img.onload=function(){  //註冊load事件,圖面載入後才做繪製
+                ctx.drawImage(this,cvs.width/2-img.width/2,cvs.height/2+100);
+            };
+            
+        }
+
+
+        function sound(src) {
+                this.sound = document.createElement("audio");
+                this.sound.src = src;
+                this.sound.setAttribute("preload", "auto");
+                this.sound.setAttribute("controls", "none");
+                this.sound.style.display = "none";
+                document.body.appendChild(this.sound);
+                this.play = function(){
+                    this.sound.play();
+                }
+                this.stop = function(){
+                    this.sound.pause();
+                    this.sound.currentTime = 0;
+                }
+        }     
+
+    </script>
+
+    
+</body>
+</html>

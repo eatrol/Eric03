@@ -1,0 +1,59 @@
+<!--
+教學名稱: Canvas - 影像處理、濾鏡
+教學網址：https://www.youtube.com/watch?v=N6agEQhtSig
+
+Tag: #javascript #canvas
+
+Goal : 用canvas對照片處理後放回去
+    1. xxx.drawImage(...)   在畫面上繪圖
+    2. xxx.data             取得照片每個pixel的資料
+    3. xxx.putImageData(...)把處理完的資料放回去
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        var cvs,ctx;
+        window.onload=function(){
+            //練習1:畫一個填滿方塊
+            cvs=document.getElementById("cvs");
+            ctx=cvs.getContext("2d");
+
+            var img = new Image();
+            img.src= "index08.png";
+
+            img.onload=function(){  //註冊load事件,圖面載入後才做繪製
+                ctx.drawImage(this,0,0,cvs.width,cvs.height);
+            };
+        };
+
+        function invercolor(){
+            var pixels =  ctx.getImageData(0,0,cvs.width,cvs.height);
+            var data = pixels.data;    //取得像素資料,一個像素佔據4個bytes R/G/B/a (範圍0~255)
+
+            for(var i=0; i<data.length; i+=4){
+                data[i] = 255 - data[i];
+                data[i+1] = 255 - data[i+1];
+                data[i+2] = 255 - data[i+2];
+            };
+            ctx.putImageData(pixels,0,0);
+          
+        };
+
+        </script>
+        <style type="text/css"> 
+        </style>   
+    </head>
+    <body>
+        <button onclick="invercolor();">顏色反轉</button> <br>
+        <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000">
+
+        </canvas>
+        
+    </body>
+
+</html>
+

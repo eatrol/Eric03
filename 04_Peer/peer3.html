@@ -1,0 +1,126 @@
+<!--
+利用peer 傳送訊息
+
+https://kknews.cc/zh-tw/code/5rnl4mk.html
+
+-->
+
+<html>
+<head>
+    <title>遠端聊天室</title>
+    <meta charset="utf-8">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script> -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/peerjs/1.3.1/peerjs.min.js"></script>
+</head>
+<body>
+<h3>本地視頻</h3>
+<div style="text-align: left">
+    自己ID<input type="text" id="myPeerid"/>（自動獲取）
+    對方ID<input type="text" id="youPeerid"/>（請手動輸入）
+</div>
+<div class="">
+    輸入聊天訊息<input type="text" id="textmsg" >
+    <button onclick="callout();">傳送訊息</button>
+    
+</div>
+<canvas id="cvs" height="600px" width="800px" style="border: 1px solid black;"></canvas>
+<h3>遠端聊天室</h3>
+<div id="chatroom"></div>
+
+<script type="text/javascript">
+    // 手繪板功能
+    var cvs = document.getElementById("cvs")
+    var ctx = cvs.getContext("2d")
+    var started = false
+    var buffer = []
+    var youBuffer=[]
+
+    var chatroom=document.getElementById("chatroom");
+    var peer = new Peer();
+    init();
+
+    function init(){
+        // 1.開啟peer功能, 自動取得peer ID
+        peer.on('open', function(id) {      
+            document.getElementById("myPeerid").value = id
+        });
+
+        // 2.設定別人call in進來時候的動作, 
+        peer.on('connection', (conn) => {
+            conn.on('data', (data) => {
+                data = JSON.parse(data);
+                chatroom.innerHTML += "對方：" + data.msg + "<br>";
+                document.getElementById("youPeerid").value = data.id
+
+                youBuffer =  JSON.parse(data.msg);
+                draw();
+            });
+        });
+    }
+  
+
+    function callout(){
+        var remoteId=document.getElementById("youPeerid").value;
+        if(remoteId==""){ alert("請輸入對方ID");return; }   // 錯誤操作 1.如果沒輸入ID
+
+        var msg=document.getElementById("textmsg").value;
+        if(msg==""){ alert("請輸入傳送訊息");return; }   // 錯誤操作2.如果沒輸入訊息
+
+        var id = document.getElementById("myPeerid").value 
+        var mydata = {"id" : id, "msg" : msg }      // 發送的資訊包含 "發送端的ID" 跟 “發送的訊息”,JSON格式
+        
+        var conn = peer.connect(remoteId);
+        conn.on('open', () => {
+            chatroom.innerHTML += "我 : " + mydata.msg; + "<br>"
+            conn.send(JSON.stringify(mydata))
+        });
+    };
+
+
+    // 手繪版相關功能 =======
+    cvs.onmousedown = function (e) {
+        //e.preventDefault();
+        ctx.strokeStyle = '#00f';
+        ctx.beginPath();
+        started = true;
+        buffer.push({ "x": e.offsetX, "y": e.offsetY });
+    }
+
+    // canvas 滑鼠移動 : 開始畫線
+    cvs.onmousemove = function (e) {
+        if (started) {
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            buffer.push({ "x": e.offsetX, "y": e.offsetY });
+        }
+    }
+
+    // canvas 滑鼠移動
+    cvs.onmouseup = function (e) {
+        if (started) {
+            started = false;
+            sendData()
+            //鼠标抬起时，发送坐标数据
+        //    sendData(txtSelfId.value, txtTargetId.value, buffer);
+            buffer = [];
+        }
+    }
+
+    function sendData(){
+        document.getElementById('textmsg').value = JSON.stringify(buffer)
+        callout();
+    }
+
+    function draw(){
+        ctx.beginPath();
+        ctx.moveTo(youBuffer[0].x,youBuffer[0].y);
+        for (var i=1; i < youBuffer.length; i++){
+            ctx.lineTo(youBuffer[i].x,youBuffer[i].y);
+            ctx.stroke();
+        }
+        youBuffer = []
+    }
+
+</script>
+</body>
+</html>

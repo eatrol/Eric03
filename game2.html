@@ -1,0 +1,190 @@
+<!--
+教學網址：https://www.youtube.com/watch?v=94EPx1NMMjU&t=445s
+Goal :  1. 增加障礙物
+-->
+
+
+<html>
+    <head>
+        <script type="text/JavaScript">
+            var mygamepiece;
+            var myobs=[];
+            var frame=1;
+            var count=1;
+
+            function component(width,height,x,y,color,pic,type){
+                this.width = width;
+                this.height = height;
+                this.x = x;
+                this.y = y;
+                this.speedx = 0 ;
+                this.speedy = 0 ;
+                this.color = color;
+                this.image = new Image()
+                this.image.src = pic;
+                this.type = type;   // 0:用顏色方塊 , 1:用真實圖檔畫圖                
+                this.draw = function(){
+                    var ctx=document.getElementById("cvs").getContext("2d"); 
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(this.x,this.y,this.width,this.height);
+                    if (this.type ==1){
+                        ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
+                    }
+                    
+                }
+
+                this.newpos = function(){
+                    this.x = this.x + this.speedx;
+                    this.y = this.y + this.speedy;
+
+                }
+
+                this.checkcrash = function(obj){
+                    var myleft = this.x;
+                    var myright = this.x + this.width;
+                    var mytop = this.y;
+                    var mybot = this.y + this.height;
+                    var youleft = obj.x;
+                    var youright = obj.x+ obj.width;
+                    var youtop = obj.y;
+                    var youbot = obj.y + obj.height;
+                    if (myright> youleft && myleft <youright && mytop< youbot && mybot > youtop ){
+                        return true;
+                    }else{
+                        return false;
+                    }
+
+                }
+            }
+
+            function obsinterval(n){
+                if ((frame/n)% 1 ==0) {
+                    return true;
+                }else{
+                    return false;
+                }
+
+            }
+
+            function clear(){
+                var ctx=document.getElementById("cvs").getContext("2d"); 
+                ctx.fillStyle = "white";
+                ctx.fillRect(0,0,800,600);
+
+            }
+
+            function updategame(){
+                for(var i=0;i<myobs.length;i++){
+                     if (mygamepiece.checkcrash(myobs[i])){
+                          endgame();
+                          return;
+                     }else{
+                        myobs[i].x+= -1;
+                     } 
+                }
+                
+                if (obsinterval(150)){
+                    var barH = Math.random()*200+50;
+                    myobs[count] = new component(50,barH,700,500-barH,"green",'brick.png','1');
+                    count +=1;
+                   // alert(myobs.length)
+                }
+
+                clear();
+                mygamepiece.newpos();
+                mygamepiece.draw();
+                frame += 1;
+
+                for (var i=0;i<myobs.length;i++){                       
+                        myobs[i].draw();    
+                }
+
+                var show=document.getElementById("show");
+                show.innerHTML = frame;
+                                
+            }
+  
+            function moveup(pk){
+                switch (pk){
+                    case 1:
+                        mygamepiece.speedx += 1;
+                        break;
+                    case 2:
+                        mygamepiece.speedx += -1;
+                        break;
+                    case 3:
+                        mygamepiece.speedy += -1;
+                        break;
+                    case 4:
+                        mygamepiece.speedy += 1;
+                        break;
+                }
+              
+            }
+
+            function clearmove(){
+                mygamepiece.speedx = 0;
+                mygamepiece.speedy = 0;
+            }
+
+            function endgame(){
+                var ctx=document.getElementById("cvs").getContext("2d"); 
+                clearmove();
+                for(var i=0;i<myobs.length;i++){
+                    myobs[i].speedx = 0;
+                    myobs[i].speedy = 0;
+                }
+                ctx.font = '32pt Calibri';
+                ctx.textAlign = 'center'
+                ctx.fillStyle="brown";
+                ctx.fillText("Game Over", 400, 560);
+                
+
+            }
+
+            window.onload = function(){
+                mygamepiece = new component(50,70,100,200,"red",'mario1.png','1');
+                myobs[0] = new component(50,300,700,200,"green",'brick.png','1');
+
+                mygamepiece.draw();
+                myobs[0].draw();
+                
+                window.setInterval(updategame,20);
+            }
+
+        </script>
+
+    </head>
+    <body>
+        <div id="show">1</div>
+        <canvas id="cvs" width="800px" height="600px" style="border:1px solid black"></canvas>
+        <!----第一種控制方式, 按一下了自己會跑--->
+        <p> 第一種控制方式, 按一下了自己會跑 </p>
+        <button onclick="moveup(1);">right</button>
+        <button onclick="moveup(2);">left</button>
+        <button onclick="moveup(3);">top</button>
+        <button onclick="moveup(4);">bottom</button>
+
+        <br>
+
+        <p> 第二種控制方式, 按住才會動, 放開會停止 </p>
+        <button onmousedown="moveup(1);" onmouseup="clearmove();">right</button>
+        <button onmousedown="moveup(2);" onmouseup="clearmove();">left</button>
+        <button onmousedown="moveup(3);" onmouseup="clearmove();">top</button>
+        <button onmousedown="moveup(4);" onmouseup="clearmove();">bottom</button>
+
+
+        
+
+        
+
+
+
+
+
+
+
+
+    </body>
+    
+</html>

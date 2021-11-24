@@ -1,0 +1,88 @@
+<!--
+教學名稱: 利用Javascript 讀取外部 JSON 格式
+教學網址：https://www.youtube.com/watch?v=OkphAk_cWPM
+
+Tag: #javascript #XMLHttpRequest
+
+Goal : AJAX 
+    1. 點擊'讀取' 讀取外不Json
+    2. 點擊'列出'資料秀在網頁 
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>讀取外部json </title>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <script type="text/javascript"> 
+        
+        var json
+
+        function getdata(){
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            req.open("get","https://data.taipei/api/v1/dataset/36847f3f-deff-4183-a5bb-800737591de5?scope=resourceAquire");
+            
+            req.onload=function(){
+                var content = document.getElementById("content");
+                var jstring= this.response
+                json = JSON.parse(jstring)
+                json = json["result"]["results"];
+                console.log(json) 
+            };
+            req.send(); //送出連線   
+             
+        };
+
+        function gocheck(){
+            createpage(20);
+            refresh(0,20)
+        }
+
+        function createpage(count){
+            var navpage= document.getElementById('navpage');
+            var j=1;
+            for (var i = 0; i< json.length; i+=count) {
+                var pk1 = i;
+                var pk2 = pk1+count
+                navpage.innerHTML += '<li class="page-item"><a class="page-link" onclick="refresh('+ pk1 +','+pk2+');">'+j+'</a></li>'; 
+                j++;
+            };
+            
+        }
+
+        function refresh(pk1,pk2){
+            var fortable = document.getElementById("fortable");
+            fortable.innerHTML = "<tr><th>類別</th><th>景點</th><th>捷運站</th><th>交通資訊</th><th>緯度</th><th>精度</th></tr>"
+            for (var i = pk1; i< pk2; i++) {
+                fortable.innerHTML += 
+                    //'<tr onclick="go2('+i +');">' +
+                    '<tr>' +
+                    '<td>' + json[i].CAT2 + '</td>' +
+                    '<td id="des' + i + '"><a onDblclick="update('+i+')" onclick="go2('+i +');">' + json[i].stitle + '</a></td>' +
+                    '<td>' + json[i].MRT + '</td>' +
+                    '<td>' + json[i].info + '</td>' +
+                    '<td>' + json[i].latitude + '</td>' +
+                    '<td>' + json[i].longitude + '</td></tr>'
+                    
+            };
+        };
+        </script>
+    </head>
+
+    <body>
+        
+        <div class="container"> 
+            
+            <button class="btn btn-dark" onclick="getdata();">讀取</button>
+            <button class="btn btn-danger" onclick="gocheck();">列出</button>
+            <hr>
+            <nav aria-label="Page navigation example"><ul id="navpage" class="pagination"></ul></nav>
+            <table id="fortable" class="table"></table>
+            
+        </div>
+    </body>
+
+</html>
+

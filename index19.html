@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="index19.html">
+        傳送資料
+        <input type="text" name="mydata" id="mydata"><br>
+        <input type="button" value="data" onclick="sendData()">
+        <br><hr>
+        <input type="button" value="打開LED燈" onclick="moveto('on');">
+        <input type="button" value="關閉LED燈" onclick="moveto('off');">
+        <input type="button" value="測試傳送資料" onclick="moveto('setuid?uid=ericlu');">
+      </form>
+
+      <script>
+
+        function moveto(content){
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            req.open("get","http://192.168.0.26/"+ content,true ); 
+            req.setRequestHeader('Access-Control-Allow-Origin', '*');
+            req.onload=function(){
+                var ss = this.responseText;
+                //ss.setAttribute("crossOrigin",'Anonymous');
+                console.log(ss)
+                var planobj = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)
+                console.log(planobj.Status);
+            };
+            req.send(); //送出連線
+        };
+
+        function sendData(){
+            var mydata = document.getElementById("mydata").value;
+            var content = "setuid?uid=" + mydata;
+            moveto(content);
+        }
+
+      </script>
+    
+</body>
+</html>

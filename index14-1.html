@@ -1,0 +1,59 @@
+<!--
+教學名稱: JSON練習 - 把JSON資料秀在網頁上範例
+教學網址：https://www.youtube.com/watch?v=OkphAk_cWPM
+
+Tag: #javascript #json
+
+Goal : JSON
+    1. 練習把JSON格式資料秀在網頁上
+    2. 
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>AJAX標籤選單 </title>
+        <script type="text/javascript">   
+        window.onload=function(){
+            var json = [{ "name": "小傑", "age": 32 },
+                        { "name": "小明", "age": 28 }];
+            var fortable = document.getElementById("fortable")
+ 
+            for (var i = 0, len = json.length; i < len; i++) {
+                fortable.innerHTML += 
+                    '<tr>' +
+                    '<td>' + json[i].name + '</td>' +
+                    '<td>' + json[i].age + '</td>' +
+                    '</tr>';
+            }
+            
+        };
+
+        function gocheck(){
+            var aaa = document.getElementById("aaa");
+            alert(aaa.value);
+        };
+
+        </script>
+    </head>
+
+    <body>
+        <input id="aaa">
+        <button onclick="gocheck();">click me</button>
+
+        <div class="container">
+        <table id="fortable">
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>年齡</th>
+                </tr>
+            </thead>
+        </table>
+
+        </div>
+    </body>
+
+</html>
+

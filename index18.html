@@ -1,0 +1,52 @@
+<html>
+<head>
+
+</head>
+<body>
+    <div class="">
+        輸入要傳送到Line的訊息 <br>
+        <input id="content">
+        <button onclick="mylink();">按我送出</button>
+    </div>
+  
+    <div id="link1"></div>
+
+
+    <script>
+        function mylink(){
+            var content = document.getElementById("content").value;
+            var url = "https://script.google.com/macros/s/AKfycbwOm7BazmtRxZHPYEbxR0lGxnjCeqA3toO3zmNv4vw/dev?msg="+ content;
+            var link1 = document.getElementById("link1")
+            link1.innerHTML= "<a href='"+url+"' id='toapp' target='_blank' title='Message'></a>"
+            var toapp = document.getElementById("toapp")
+            toapp.click()
+
+        }
+
+        function sendmsg(){
+            var content = document.getElementById("content").value;
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+
+            //req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            req.setRequestHeader('Access-Control-Allow-Origin', '*');
+            //req.setRequestHeader('Access-Control-Request-Method', '*');
+            //req.setRequestHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+            //req.setRequestHeader('Access-Control-Allow-Headers', '*');
+
+            req.open("post","https://script.google.com/macros/s/AKfycbwOm7BazmtRxZHPYEbxR0lGxnjCeqA3toO3zmNv4vw/dev?msg="+ content ); 
+            req.onload=function(){
+                var ss = this.responseText;
+                console.log(ss);
+            };
+            req.send(); //送出連線
+        };
+    </script>
+    
+
+
+
+</body>
+
+
+
+</html>

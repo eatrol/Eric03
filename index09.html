@@ -1,0 +1,87 @@
+<!--
+教學名稱: Canvas 繪圖 - 檔案輸入與輸出
+教學網址：https://www.youtube.com/watch?v=mL5eCbXBVG8
+
+Tag: #javascript #canvas
+
+Goal : 開發可上傳照片 進行處理後儲存的
+    1. HTML增加一個input , onchange=xxxx() 設定觸發動作的函數loadfile()
+    2. xxx.data             取得照片每個pixel的資料
+    3. xxx.putImageData(...)把處理完的資料放回去
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        var cvs,ctx;
+        window.onload=function(){
+            //讀取HTML的照片
+            cvs=document.getElementById("cvs");
+            ctx=cvs.getContext("2d");
+
+            //載入影像並顯示 
+            /*
+            var img = new Image();
+            img.src= "index8.png";
+            img.onload=function(){  //註冊load事件,圖面載入後才做繪製
+                ctx.drawImage(this,0,0,cvs.width,cvs.height);
+            };
+            */
+        };
+
+        function invercolor(){
+            var pixels =  ctx.getImageData(0,0,cvs.width,cvs.height);
+            var data = pixels.data;    //取得像素資料,一個像素佔據4個bytes R/G/B/a (範圍0~255)
+
+            for(var i=0; i<data.length; i+=4){
+                data[i] = 255 - data[i];
+                data[i+1] = 255 - data[i+1];
+                data[i+2] = 255 - data[i+2];
+            };
+            console.log(data)
+            ctx.putImageData(pixels,0,0);
+          
+        };
+
+        // 上傳照片後觸發的動作,畫圖
+        function loadfile(input){
+            var file = input.files[0];              //宣告file為讀取上傳的第一筆資料
+            var src = URL.createObjectURL(file);    //設定src為檔案連結
+
+            //載入影像並顯示
+            var img = new Image();              
+            img.src = src;
+            img.onload=function(){
+                ctx.drawImage(this,0,0,cvs.width,cvs.height);
+            };
+        };
+
+        // 畫圖
+        function savefile(){
+            var link =  document.getElementById("ddd");
+            link.download="image.png";
+            link.href=cvs.toDataURL("image/png");
+            link.click();
+        };
+
+        </script>
+        <style type="text/css"> 
+        </style>   
+    </head>
+    <body>
+        <input type="file" onchange="loadfile(this);">
+        <button onclick="invercolor();">顏色反轉</button> 
+        <button onclick="savefile();">儲存檔案</button><br>
+        
+        <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000">
+        </canvas>
+        <br>
+        <a id="ddd" href="link.href">點我下載</a>
+        
+    </body>
+
+</html>
+

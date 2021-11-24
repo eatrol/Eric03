@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="index19.html">
+        <table>
+          <tr><td>YAW :</td><td><input type="text" id="text1"><br></td></tr>
+          <tr><td>Pitch :</td><td><input type="text" id="text2"><br></td></tr>
+          <tr><td>Roll :</td><td><input type="text" id="text3"><br></td></tr>
+        </table>
+
+        <input type="button" value="單次讀取角度" onclick="getAll()">
+        <input type="button" value="READ" id="btnSweep" onclick="sweep()">
+        <br><hr>
+        <input type="button" value="讀取YAW" onclick="moveto('yaw');">
+        <input type="button" value="讀取Pitch" onclick="moveto('pitch');">
+        <input type="button" value="讀取Roll" onclick="moveto('roll');">
+        <hr>
+        <input type="button" value="on" onclick="moveto('on');">
+        <input type="button" value="off" onclick="moveto('off');">
+
+      </form>
+
+      <script>
+
+        var myVar;
+        var isSweep = false;
+        var ip = "http://192.168.0.23/";
+
+        function moveto(content){
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            req.open("get",ip + content,true ); 
+
+            req.setRequestHeader('Access-Control-Allow-Origin', '*');
+            req.onload=function(){
+                var ss = this.responseText;
+                //ss.setAttribute("crossOrigin",'Anonymous');
+                console.log(ss)
+                var planobj = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)
+                console.log(planobj.Status);
+            };
+            req.send(); //送出連線
+        };
+
+        function getAll(){
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            //req.open("get","http://192.168.0.26/all",true ); 
+            req.open("get",ip + "all",true );
+            
+            req.onload=function(){
+                var ss = this.responseText;
+                console.log(ss)
+                var ddata = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)              
+                document.getElementById("text1").value = ddata.yaw;
+                document.getElementById("text2").value = ddata.pitch;
+                document.getElementById("text3").value = ddata.roll;
+
+            };
+            req.send(); //送出連線
+        };
+
+
+        function sweep(){
+          if (isSweep == false){
+            myVar = setInterval(function(){ getAll() }, 400);  // 開啟左右掃描
+            isSweep = true;
+            document.getElementById("btnSweep").value = "STOP"
+
+          } else{
+            clearInterval(myVar);   // 停止左右掃描
+            isSweep = false;
+            document.getElementById("btnSweep").value = "READ"
+          }
+        };
+
+      </script>
+    
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!--
+教學名稱: 16-滑鼠移動放大照片的功能
+參考網址： http://hk.uwenku.com/question/p-mdjvkske-baz.html
+
+Tag: #javascript #Jquery
+
+Goal : 
+    1. 讀取滑鼠在照片的座標 
+    2.
+-->
+
+<html>
+<head></head>
+
+<body>
+<div style="width:606;height:666;overflow: hidden;margin:0px;border:1px">
+    <img id="photo" src="index16/product-6.png" style="width: 606; ">
+
+</div>
+
+
+<script>  
+    // 寫法 1: 正規寫法
+    document.getElementById('photo').addEventListener('mousemove', function(e){
+        this.style.width= 606*2;
+        this.style.height = 666*2;
+        this.style.position= 'relative';
+        this.style.left = -e.offsetX/2;  // 滑鼠在圖面Ｘ座標
+        this.style.top = -e.offsetY/2;   // 滑鼠在圖面Ｙ座標
+    })
+
+
+    document.getElementById('photo').addEventListener('mouseout', function(e){
+        this.style.width=606;
+        this.style.height=666;
+        this.style.position= 'static';    
+    })
+
+</script> 
+
+
+<!-- <script src="//code.jquery.com/jquery-1.10.2.min.js"></script> 
+<script> 
+// 寫法 2: 採用 Jquery 寫法
+    $(document).ready(function() { 
+        $("#photo").mousemove(function(e) { 
+            this.style.width= 800;
+            this.style.height = 800;
+            this.style.position= 'relative';
+            this.style.left = -e.pageX;  // 滑鼠在圖面Ｘ座標
+            this.style.top = -e.pageY;   // 滑鼠在圖面Ｙ座標
+        }); 
+    });   
+
+    $(document).ready(function() { 
+        $("#photo").mouseout(function(e) { 
+            this.style.width=400;
+            this.style.height=400;
+            this.style.position= 'static';
+        }); 
+    });   
+
+</script>  -->
+
+
+
+</body>
+
+
+</html>

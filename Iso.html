@@ -1,0 +1,147 @@
+<!--
+教學名稱: Canvas - 影像處理、濾鏡
+教學網址：https://www.youtube.com/watch?v=N6agEQhtSig
+
+Tag: #javascript #canvas
+
+Goal : 用canvas對照片處理後放回去
+    1. xxx.drawImage(...)   在畫面上繪圖
+    2. xxx.data             取得照片每個pixel的資料
+    3. xxx.putImageData(...)把處理完的資料放回去
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        var factor = 132/104;
+        var gameH = 101;
+        var gameW = 132;
+        var path = "isometriccity/PNG/cityTiles_00";
+        var totalW = 0;
+        var totalH = 0;
+        var cvs,ctx;
+        var img;
+        var imgX=[];
+        var imgY=[];
+        var ix = 0;
+        var other = [4,11,12,18,23,24,26,31,33,34,36,41,44,57,58,65,67,75,83,97,105,108,114,119,123];
+        var check1 = false;
+
+        window.onload=function(){
+            
+            cvs=document.getElementById("cvs");
+            ctx=cvs.getContext("2d");
+            //練習1:畫一個填滿方塊
+            cvs.height= gameH 
+            cvs.width = gameW *100;
+
+            for(var i=0;i<=125;i++){
+                setTimeout(readimg(i,getname(i)),1000000); 
+            }
+            
+
+            
+            
+            //cvs.width = totalW;
+            
+
+
+
+           // console.log(imgX);
+            //console.log(imgY);
+
+        };
+
+
+        function drawmaps(n){
+            
+          
+            for(var i=0;i<=125;i++){
+                check1 = true;
+                for (var j=0; j <other.length;j++){
+                    if(i == other[j]){
+                        check1 = false;
+                    }  
+                }
+
+                if (check1 == true){
+                    console.log(i + "----"+check1);
+                    drawmap(getname(i),totalW,totalH);
+                    if (totalW > gameW * (n-2)){
+                        totalW = 0;
+                        totalH = totalH +gameH;
+                    }else{
+                        totalW = totalW + gameW;
+                    }
+                    //totalW = totalW % gameW*10;
+                    
+                    
+                }
+               
+            }
+            cvs=document.getElementById("cvs")
+            cvs.width = gameW * n;
+            cvs.height = totalH +gameH;
+          
+        }
+
+
+        function readimg(i,img_url){
+                var img = new Image();
+                img.src = img_url;
+
+                // 載入完成獲取寬高
+                setTimeout(img.onload,1000); 
+                img.onload = function(){
+                    //console.log(i + "-----"+img.height);
+                    imgX[i] = img.width*1;
+                    imgY[i] = img.height*1;                  
+                };
+        }
+
+
+        function drawmap(picpath,x1,y1){
+            cvs=document.getElementById("cvs");
+            ctx=cvs.getContext("2d");
+            var img = new Image();
+            img.src= picpath;
+            img.onload=function(){
+                ctx.drawImage(img,x1,y1,gameW,gameH);
+            }
+        }
+
+
+        // 取得名字的函數
+        function getname(i){
+            if (i<10 ){
+                var a1 = "00" + i ;
+            }else if( i>=10 && i<100 ) {
+                var a1 = "0" + i;
+            } else if(i>=100  && i<1000){
+                var a1 = i;
+            }
+            var aaa = "isometriccity/PNG/cityTiles_" + a1 + ".png"
+            return aaa;
+        }
+
+
+        </script>
+        <style type="text/css"> 
+        </style>   
+    </head>
+    <body>
+        <button onclick="invercolor();">顏色反轉</button> <br>
+        <canvas id="cvs" width="1920px" height="448px" style="border:1px solid #000000">
+        </canvas>
+        <br>
+        <img id="ccc" src="isometriccity/PNG/cityTiles_122.png"><br>
+
+        <div id="divpic"></div>
+        <button onclick ="drawmaps(4);">push to generate pics</button>
+    </body>
+
+</html>
+

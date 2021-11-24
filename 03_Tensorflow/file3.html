@@ -1,0 +1,89 @@
+<!--
+教學名稱: 臉部辨識3 - 於影片中辨識人臉, 以紅框圈出
+教學網址：https://www.youtube.com/watch?v=tsHVjryZJCA&t=2055s
+Goal : 取出臉部照片,背景模糊處理
+
+    1. 需向在HTML建立一個 <video id="xxxx">物件
+    2. 建立影片檔案連結, 掛進<video>
+        xxxx.src=URL.createObjectURL(file);
+ 
+-->
+
+<html>
+<head>
+    <title>webcam</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+</head>
+
+<body>
+    <div class="">
+        選擇一個檔案 <input type="file" onchange="loadfile(this)">
+     </div>
+
+     <img id="img1" src="">
+
+<canvas id="cvs"></canvas>
+
+
+
+<script>
+    const vd = document.getElementById("img1");
+    const ctx = document.getElementById("cvs").getContext("2d");
+    let model = null;
+    init();
+
+
+    async function init(){
+        model = await blazeface.load();   // 優化速度, 在網頁一開始就載入模型
+        window.setInterval(gocheck,100); //每0.01 秒執行
+    }
+
+  
+    async function refresh() {  
+
+        const returnTensors = false;  // 利用模型對圖面做臉部辨識, 對機械學習才需要設定這個參數, 一般使用
+        const predictions = await model.estimateFaces(vd, returnTensors); // 需要一個影片物件 圖面物件/影片物件/CANVAS 
+        
+        // 如果圖面中有臉的話, 利用迴圈把臉圈出來
+        if (predictions.length > 0) {   
+        
+            for (let i = 0; i < predictions.length; i++) {
+                const start = predictions[i].topLeft; //0:寬,1:長
+                const end = predictions[i].bottomRight;
+                const size = [end[0] - start[0], end[1] - start[1]];
+       
+                // 畫出紅色框框標示人臉
+                ctx.strokeStyle="red";
+                ctx.strokeRect(start[0], start[1], size[0], size[1]); 
+            }
+        }
+    }
+
+    function gocheck(){
+        const img= new Image();
+        var imgid = Math.random()
+        //img.src = 'http://192.168.0.23/capture?t=' + imgid;
+        vd.src = "http://192.168.0.23/capture?_cb=" + imgid;
+        img.src = "http://192.168.0.23/capture?_cb=" + imgid;
+
+        // 以下兩行設定很重要,針對ESP32-Stream需附加這兩行
+        vd.setAttribute("crossOrigin",'Anonymous')
+        img.setAttribute("crossOrigin",'Anonymous')
+
+        img.addEventListener("load", ()=>{
+            ctx.canvas.width = img.width;
+            ctx.canvas.height = img.height;
+            ctx.drawImage(img,0,0,img.width,img.height);
+            refresh();   
+        });
+
+    }
+
+
+
+
+</script>
+
+</body>
+</html>

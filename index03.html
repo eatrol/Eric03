@@ -1,0 +1,40 @@
+<!--
+教學名稱:css3 transition
+教學網址：https://www.youtube.com/watch?v=7zhNzNTHtnc
+Goal : 滑鼠移入,移出, 會有淡出淡入的效果
+    1.要在css設定 transition的屬性, 這個屬性定義要變化的參數(opacity,background-color)
+    2.寫 javascript 
+        XXX.addEventLsitener 滑鼠移入(mouseover) 要變化的東西
+        XXX.addEventLsitener 滑鼠移出(mouseover) 要變化的東西
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        function start(){
+            var text= document.getElementById("text"); 
+            text.classList.add("effect")
+        }
+        </script>
+
+        <style type="text/css"> 
+        .effect{
+            animation:blink 1s infinite;
+        }
+        @keyframes blink{
+            0% {opacity:0} 
+            50% {opacity:1}
+            100% {opacity:0}
+        }
+        </style>   
+    </head>
+    <body>
+        <div id="text">Hello world!</div>
+        <button onclick="start();">start</button>
+    </body>
+
+</html>
+

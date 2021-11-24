@@ -1,0 +1,52 @@
+<!--
+教學名稱: Javascript 函式的綁定物件 this
+教學網址：https://www.youtube.com/watch?v=NHliVGQef-4
+
+Tag: #javascript 
+
+Goal : 綁定物件的方法
+    1. xxx.bind
+    2. xxx.apply
+    3. xxx.call
+
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        //練習1: bind功能 綁定物件
+        // function test(){
+        //     console.log("綁定物件",this)
+        // };
+        // test();
+        // let test2 = test.bind({x:3});
+        // test2();
+        // let test3 = test.bind(document);
+        // test3();
+
+        //練習2: apply呼叫函示
+        function add(n1,n2){
+            console.log("結果", n1+n2);
+            console.log("綁定物件",this);
+        };
+        add(3,4);
+        add.apply({y:4},[4,5]);
+        add.apply(document,[5,6]);
+
+
+        //用call 呼叫函數
+        add.call({z:10},6,8);
+
+        </script>
+        <style type="text/css"> 
+    
+        </style>   
+    </head>
+    <body>
+    </body>
+
+</html>
+

@@ -1,0 +1,63 @@
+<!--
+教學名稱:canvas 檢疫基本繪圖版
+教學網址：https://github.com/yjmyzz/peerjs-sample/blob/master/html/js/canvas.js
+
+Goal : 點擊滑鼠用canvas 畫圖 
+
+-->
+
+
+<html>
+
+
+
+
+<head>
+<title>CANVAS手繪版</title>
+</head>
+
+<body>
+
+<canvas id="cvs" height="600px" width="800px" style="border: 1px solid black;"></canvas>
+
+
+<script>
+var cvs = document.getElementById("cvs")
+var ctx = cvs.getContext("2d")
+var started = false
+
+    // canvas 滑鼠按下 ：開啟 beginPath 
+    cvs.onmousedown = function (e) {
+        //e.preventDefault();
+        ctx.strokeStyle = '#00f';
+        ctx.beginPath();
+        started = true;
+        //buffer.push({ "x": e.offsetX, "y": e.offsetY });
+    }
+
+    // canvas 滑鼠移動 : 開始畫線
+    cvs.onmousemove = function (e) {
+        if (started) {
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        //    buffer.push({ "x": e.offsetX, "y": e.offsetY });
+        }
+    }
+
+    // canvas 滑鼠移動
+    cvs.onmouseup = function (e) {
+        if (started) {
+            started = false;
+            //鼠标抬起时，发送坐标数据
+        //    sendData(txtSelfId.value, txtTargetId.value, buffer);
+        //    buffer = [];
+        }
+    }
+
+</script>
+
+</body>
+
+
+
+</html>

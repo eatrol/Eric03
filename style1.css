@@ -1,0 +1,45 @@
+
+/*
+1. 將display設定為 flex, 就可以水平排版
+2. justify-content 屬性可以讓欄位水平,靠左/置中/靠右
+3. align-items 屬性讓欄位垂直對齊
+4. flex 屬性讓欄位排版 固定尺寸/自動調整
+*/
+
+
+nav{
+    display: flex; 
+}
+
+nav .logo{
+    flex:none;  /*沒有彈性固定尺寸*/
+    width:100px;
+    background-color: #ffcccc;
+}
+
+nav .menu{
+    flex:auto;  /*自動調整,把空間張滿*/
+    background-color: #ccffcc;
+}
+
+nav .user{
+    flex:auto;  /*自動調整,把空間張滿*/
+    background-color: #ccccff;
+}
+
+
+
+
+#sec1 {
+    display:flex;               /**讓 <DIV> 欄位水平顯示**/
+    background-color: #cccccc;
+    justify-content: center;    /**讓欄位水平置中**/
+    align-items: center;        /**讓欄位垂直對齊**/      
+}
+
+#sec1 .item{
+    flex:none;
+    width:300px;
+    margin:10px;
+    background-color: #ffcccc;
+}

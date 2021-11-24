@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+    <style type="text/css">
+      hr{
+          margin:1px;
+      }
+
+      .slider {
+          -webkit-appearance: none;
+          width: 250px;
+          height: 7px;
+          border-radius: 5px;  
+          background: #d3d3d3;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+          }
+
+      .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%; 
+          background: #4CAF50;
+          cursor: pointer;
+      }
+
+      .slider::-moz-range-thumb {
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background: #4CAF50;
+          cursor: pointer;
+      }
+
+      .hide{
+          display:none;
+      }
+
+      .inpubox{
+          width:100px;
+      }
+
+  </style>
+
+
+
+    <title>Telescope</title>
+</head>
+<body style="margin:10px">
+
+    <form action="index19.html">
+        <table>
+          <tr><td>YAW :</td><td><input type="text" id="text1"><br></td></tr>
+          <tr><td>Pitch :</td><td><input type="text" id="text2"><br></td></tr>
+          <tr><td>Roll :</td><td><input type="text" id="text3"><br></td></tr>
+        </table>
+
+        <input type="button" value="單次讀取角度" onclick="getAll()">
+        <input type="button" value="READ" id="btnSweep" onclick="sweep()">
+        <!----
+        <br><hr>
+        <input type="button" value="讀取YAW" onclick="moveto('yaw');">
+        <input type="button" value="讀取Pitch" onclick="moveto('pitch');">
+        <input type="button" value="讀取Roll" onclick="moveto('roll');">
+        -->
+        <hr>
+        <input type="button" value="on" onclick="moveto('on');">
+        <input type="button" value="off" onclick="moveto('off');">
+
+      </form>
+      <br><hr>
+      <table>
+        <tr>
+            <td><li> 方位角(ALT)：</li></td>
+            <td><input class="inpubox" id="lcmX" value=0 onchange="document.getElementById('lcmXslide').value = this.value" ></td>
+            <td id="lcmXstep"></td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+            <td style="width:40px;padding-left: 25px;" id="slidemin1" >-90</td>
+            <td><div class="slidecontainer">
+                    <input type="range" min="-90" max="90" value="0" class="slider" id="lcmXslide" oninput="slidebar('lcmXslide','lcmX')">  
+            </div></td>
+            <td id="slidemax1" style="width:50px">90 </td>
+        </tr>
+      </table>
+
+      <div>
+      <table> 
+        <tr>
+            <td><li>高度角(AZ)：</li></td>
+            <td><input class="inpubox" id="lcmY" value="0" onchange="document.getElementById('lcmYslide').value = this.value"></td>
+            <td id="lcmYstep"></td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+            <td style="width:40px;padding-left: 25px;" id="slidemin2">-5</td>
+            <td><div class="slidecontainer">    
+                    <input type="range" min="-5" max="35" value="0" class="slider" id="lcmYslide" oninput="slidebar('lcmYslide','lcmY')">               
+            </td></div>
+            <td id="slidemax2" style="width:50px">35 </td>     
+        </tr>
+      </table>
+      <button onclick = "goTele();" id="btnStart">CLICK ME</button>
+      <button onclick = "goStop();">STOP</button>
+      <br>
+      <div id="showStatus">Initialing......</div>
+    </div>
+    <br><hr>
+    <div class="">
+      
+      <table>
+        <tr>
+          <td><li>微調：</li></td>
+          <td><input class="inpubox" id="minortext" value="10" onchange="document.getElementById('minorslide').value = this.value"></td>
+          <td></td>
+      </tr>
+      </table>
+      <table>
+        <tr>
+            <td style="width:40px;padding-left: 25px;" id="slidemin3">0</td>
+            <td><div class="slidecontainer">    
+                    <input type="range" min="10" max="100" value="10" class="slider" id="minorslide" oninput="slidebar('minorslide','minortext')">               
+            </td></div>
+            <td id="slidemax3" style="width:50px">100 </td>     
+        </tr>
+      </table>
+      <div style="margin-top: 10px;">
+      <button onclick = "minorGo('left');">向左微調</button>
+      <button onclick = "minorGo('right');">向右微調</button>
+      <button onclick = "minorGo('up');">向上微調</button>
+      <button onclick = "minorGo('down');">向下微調</button>
+      </div>
+    </div>
+
+
+
+
+
+      <script>
+        var myVar;
+        var isSweep = false;
+        var ip = "http://192.168.0.23/";
+
+        function moveto(content){
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            req.open("get",ip + content,true ); 
+
+            req.setRequestHeader('Access-Control-Allow-Origin', '*');
+            req.onload=function(){
+                var ss = this.responseText;
+                //ss.setAttribute("crossOrigin",'Anonymous');
+                console.log(ss)
+                var planobj = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)
+                console.log(planobj.Status);
+            };
+            req.send(); //送出連線
+        };
+
+        function getAll(){
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            //req.open("get","http://192.168.0.26/all",true ); 
+            req.open("get",ip + "all",true );
+            
+            req.onload=function(){
+                var ss = this.responseText;
+                console.log(ss)
+                var ddata = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)              
+                document.getElementById("text1").value = ddata.yaw;
+                document.getElementById("text2").value = ddata.pitch;
+                document.getElementById("text3").value = ddata.roll;
+
+            };
+            req.send(); //送出連線
+        };
+
+
+        function sweep(){
+          if (isSweep == false){
+            myVar = setInterval(function(){ getAll() }, 400);  // 開啟連續讀值
+            isSweep = true;
+            document.getElementById("btnSweep").value = "STOP"
+
+          } else{
+            clearInterval(myVar);   // 停止左右掃描
+            isSweep = false;
+            document.getElementById("btnSweep").value = "READ"
+          }
+        };
+
+
+        function slidebar(pk1,pk2){
+            var slider = document.getElementById(pk1);
+            var bbb = document.getElementById(pk2);
+            bbb.value = slider.value;
+        };
+
+        function goStop(){
+            var req= new XMLHttpRequest(); 
+            req.open("get",ip + "motor?choice=up&nStep=0" ,true );
+            req.onload=function(){   
+              console.log("stop");
+            };
+            req.send(); //送出連線
+        };
+
+
+
+        //  調整望遠鏡校正角度------------------
+        function goTele(){
+
+          // 自訂角度,轉動高度角  -------------------
+          this.moveY = function(anglePitch){
+            var content;
+            var myPitch = document.getElementById("lcmY").value;
+            var diffPitch = Math.floor((myPitch - anglePitch)/0.1125 * 7.95);   //  Y軸減速比
+            document.getElementById("lcmYstep").innerText = diffPitch + " steps";
+
+            // 解析要寄送的網址
+            if (diffPitch > 0){
+              content = "motor?choice=up&nStep=" + Math.abs(diffPitch);
+            } else {
+              content = "motor?choice=down&nStep=" + Math.abs(diffPitch);
+            }
+
+            // 以AJAX 跟ESP-32後端溝通 
+            var req= new XMLHttpRequest(); 
+            req.open("get",ip + content ,true );
+
+            req.onreadystatechange = function(){    // 第二種方式
+            //req.onload=function(){   
+      
+            if (req.readyState === 4){    // 1:服务器连接已建立 2:请求已接受 3:请求处理中 4: 表示已完成
+                  document.getElementById("lcmXstep").innerText = "";
+                  document.getElementById("lcmYstep").innerText = "";
+                  
+                  console.log("repeat new cycles");
+                
+                  //這串的用意是要網頁暫停幾秒再做下一步,因為發現太快丟資料給ESP32 會造成GRYO輸出錯誤的數值
+                  for(var i=0;i<299999;i++){  
+                    console.log(i);
+                  }
+                  var btnStart = document.getElementById("btnStart");
+                  btnStart.click();
+              }              
+            };
+            req.send(); //送出連線
+          }
+
+
+          // 自訂角度,轉動方位角 -------------------
+          this.moveX = function(angleYaw){
+            var content;
+            var myYaw = document.getElementById("lcmX").value;
+            var diffYaw = Math.floor((myYaw - angleYaw)/0.1125 * 4.821);        // Ｘ軸減速比
+            document.getElementById("lcmXstep").innerText = diffYaw + " steps";
+
+            // 解析要寄送的網址
+            if (diffYaw > 0){
+              content = "motor?choice=right&nStep=" + Math.abs(diffYaw);
+            } else {
+              content = "motor?choice=left&nStep=" + Math.abs(diffYaw);
+            }
+            // 以AJAX 跟ESP-32後端溝通 
+            var req= new XMLHttpRequest();  
+            req.open("get",ip + content ,true );
+            req.onreadystatechange = function(){    // 第二種方式
+
+            //req.onload=function(){   
+              if (req.readyState == 4){    // 1:服务器连接已建立 2:请求已接受 3:请求处理中 4: 表示已完成
+                var anglePitch = document.getElementById("text2").value*1;
+                moveY(anglePitch);
+              }
+            };
+            req.send(); //送出連線
+          }      
+
+          this.getAngle = function(){
+            console.log("hi");
+            var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
+            req.open("get",ip + "all",true );
+            
+            req.onload = function(){    // 第二種方式
+                var ss = this.responseText;
+                console.log(ss);
+                var ddata = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)    
+
+                document.getElementById("text1").value = ddata.yaw;
+                document.getElementById("text2").value = ddata.pitch;
+                document.getElementById("text3").value = ddata.roll;
+
+                var myYaw = document.getElementById("lcmX").value*1;
+                var myPitch = document.getElementById("lcmY").value*1;
+                var youYaw = document.getElementById("text1").value*1;
+                var youPitch = document.getElementById("text2").value*1; 
+              if(Math.abs(myYaw - youYaw)>0.5 || Math.abs(myPitch - youPitch)>0.5 ){
+                  console.log("moving");
+                  if (req.readyState == 4){  
+                    document.getElementById("showStatus").innerText = "雲台移動中..."
+                    moveX(youYaw);  
+                  }    
+              } else{
+                  document.getElementById("showStatus").innerText = "雲台停止..已完成校正"
+              }
+
+            };
+            req.send(); //送出連線
+
+          }
+             
+          this.getAngle();
+
+        }
+
+
+        function minorGo(pk1){
+          var pk2 = document.getElementById("minortext").value;
+          var content = "motor?choice=" + pk1 + "&nStep=" + Math.abs(pk2);
+          
+          // 以AJAX 跟ESP-32後端溝通 
+          var req= new XMLHttpRequest();  
+            req.open("get",ip + content ,true );
+            req.onload=function(){ 
+              if (req.readyState == 4){    // 1:服务器连接已建立 2:请求已接受 3:请求处理中 4: 表示已完成
+                getAll(); 
+              }       
+            };
+            req.send(); //送出連線
+        }
+
+
+      </script>
+    
+</body>
+</html>

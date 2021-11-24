@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <script type="text/JavaScript">
+            var mygamepiece;
+
+            function component(width,height,x,y){
+                this.width = width;
+                this.height = height;
+                this.x = x;
+                this.y = y;
+                this.speedx = 0 ;
+                this.speedy = 0 ;
+                //  
+                //
+                this.update = function(){
+                    var ctx=document.getElementById("cvs").getContext("2d"); 
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(this.x,this.y,this.width,this.height);
+                }
+
+                this.newpos = function(){
+                    this.x = this.x + this.speedx;
+                    this.y = this.y + this.speedy;
+
+                }
+            }
+
+            function clear(){
+                var ctx=document.getElementById("cvs").getContext("2d"); 
+                ctx.fillStyle = "white";
+                ctx.fillRect(0,0,800,600);
+
+            }
+
+            function updategame(){
+                clear();
+                mygamepiece.newpos();
+                mygamepiece.update();
+                
+            }
+  
+            function moveup(pk){
+                switch (pk){
+                    case 1:
+                        mygamepiece.speedx += 1;
+                        break;
+                    case 2:
+                        mygamepiece.speedx += -1;
+                        break;
+                    case 3:
+                        mygamepiece.speedy += -1;
+                        break;
+                    case 4:
+                        mygamepiece.speedy += 1;
+                        break;
+                }
+            }
+
+            function clearmove(){
+                mygamepiece.speedx = 0;
+                mygamepiece.speedy = 0;
+            }
+
+            window.onload = function(){
+                mygamepiece = new component(50,70,100,200);
+                mygamepiece.update();
+                window.setInterval(updategame,20);
+            }
+
+        </script>
+
+    </head>
+    <body>
+        <canvas id="cvs" width="800px" height="600px" style="border:1px solid black"></canvas>
+        <!----第一種控制方式, 按一下了自己會跑--->
+        <p> 第一種控制方式, 按一下了自己會跑 </p>
+        <button onclick="moveup(1);">right</button>
+        <button onclick="moveup(2);">left</button>
+        <button onclick="moveup(3);">top</button>
+        <button onclick="moveup(4);">bottom</button>
+
+        <br>
+
+        <p> 第二種控制方式, 按住才會動, 放開會停止 </p>
+        <button onmousedown="moveup(1);" onmouseup="clearmove();">right</button>
+        <button onmousedown="moveup(2);" onmouseup="clearmove();">left</button>
+        <button onmousedown="moveup(3);" onmouseup="clearmove();">top</button>
+        <button onmousedown="moveup(4);" onmouseup="clearmove();">bottom</button>
+
+
+        
+
+        
+
+
+
+
+
+
+
+
+    </body>
+    
+</html>

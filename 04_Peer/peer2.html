@@ -1,0 +1,71 @@
+<!--
+利用peer 傳送訊息
+
+https://kknews.cc/zh-tw/code/5rnl4mk.html
+
+-->
+
+<html>
+<head>
+    <title>遠端聊天室</title>
+    <meta charset="utf-8">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script> -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/peerjs/1.3.1/peerjs.min.js"></script>
+</head>
+<body>
+<h3>本地視頻</h3>
+<div style="text-align: left">
+    自己ID<input type="text" id="myPeerid"/>（自動獲取）
+    對方ID<input type="text" id="youPeerid"/>（請手動輸入）
+</div>
+<div class="">
+    輸入聊天訊息<input type="text" id="textmsg" >
+    <button onclick="callout();">傳送訊息</button>
+
+</div>
+<h3>遠端聊天室</h3>
+<div id="chatroom"></div>
+
+<script type="text/javascript">
+
+    var chatroom=document.getElementById("chatroom");
+    var peer = new Peer();
+    init();
+
+    function init(){
+        // 1.開啟peer功能, 自動取得peer ID
+        peer.on('open', function(id) {      
+            document.getElementById("myPeerid").value = id
+        });
+
+        // 2.設定別人call in進來時候的動作, 
+        peer.on('connection', (conn) => {
+            conn.on('data', (data) => {
+                data = JSON.parse(data);
+                chatroom.innerHTML += "對方：" + data.msg;
+                document.getElementById("youPeerid").value = data.id
+            });
+        });
+    }
+  
+
+    function callout(){
+        var remoteId=document.getElementById("youPeerid").value;
+        if(remoteId==""){ alert("請輸入對方ID");return; }   // 錯誤操作 1.如果沒輸入ID
+
+        var msg=document.getElementById("textmsg").value;
+        if(msg==""){ alert("請輸入傳送訊息");return; }   // 錯誤操作2.如果沒輸入訊息
+
+        var id = document.getElementById("myPeerid").value 
+        var mydata = {"id" : id, "msg" : msg+"<br>" }      // 發送的資訊包含 "發送端的ID" 跟 “發送的訊息”,JSON格式
+        
+        var conn = peer.connect(remoteId);
+        conn.on('open', () => {
+            chatroom.innerHTML += "我 : " + mydata.msg;
+            conn.send(JSON.stringify(mydata))
+        });
+    };
+
+</script>
+</body>
+</html>

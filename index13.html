@@ -1,0 +1,67 @@
+<!--
+教學名稱: 選單開合範例
+教學網址：https://www.youtube.com/watch?v=SWhNYC6QYDc
+
+Tag: #javascript  #css
+
+Goal : 選單的兩種方法
+    1. 利用if/else 來判斷, 設定display屬性為 "none" 或是"block""
+    2. 利用 xxx.classlist.toggle(xxx) 直接切換屬性
+-->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="urt-8"/>
+        <title>try</title>
+        <script type="text/javascript">
+        function togglemenu(number){
+            var menu= document.getElementById("menu"+number);
+            // 方法1:用if判斷狀態
+            // if(menu.style.display == "none"){
+            //     menu.style.display= "block";
+            // }else{
+            //     menu.style.display = "none";
+            // }
+
+            // 方法2: classlist.toggle 來判斷
+            menu.classList.toggle("hide")  // 切換標籤物件 class的hide設定
+            
+        };
+
+        </script>
+        <style type="text/css"> 
+        .hide{
+            display:none;
+        }
+    
+        </style>   
+    </head>
+
+    <body>
+        <div onclick="togglemenu(1);">選單邊題1</div>
+        <ul id="menu1" class="hide">
+            <li>項目1-1</li>
+            <li>項目1-2</li>
+            <li>項目1-3</li>
+        </ul>
+
+        <div onclick="togglemenu(2);">選單邊題2</div>
+        <ul id="menu2" class="hide">
+            <li>項目2-1</li>
+            <li>項目2-2</li>
+            <li>項目2-3</li>
+        </ul>
+
+        <div onclick="togglemenu(3);">選單邊題3</div>
+        <ul id="menu3" class="hide">
+            <li>項目3-1</li>
+            <li>項目3-2</li>
+            <li>項目3-3</li>
+        </ul>
+
+
+    </body>
+
+</html>
+
