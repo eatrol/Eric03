@@ -1,12 +1,19 @@
 <!--
-教學名稱: 物件辨識2 - 於影片中辨識人臉, 以紅框圈出
-教學網址：https://www.youtube.com/watch?v=tsHVjryZJCA&t=2055s
+教學名稱: 物件辨識2 - 於影片中辨識物件, 以紅框圈出
+教學網址：https://ithelp.ithome.com.tw/articles/10225146
 Goal : 辨識影片
 
-    1. 需向在HTML建立一個 <video id="xxxx">物件
-    2. 建立影片檔案連結, 掛進<video>
-        xxxx.src=URL.createObjectURL(file);
- 
+    1. 需在<head> 匯入tf.min.js 及 coco-ssd 這個模組
+    2. 在 init() 初始化 coco-ssd模組
+        model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+    3. 需向在HTML建立兩個物件,原始影片檔 及 辨識後的結果
+        <video id="xxxx"> 
+        <cavnas id="xxxx">
+    4. 建立影片檔案連結, 掛進<video>
+        xxxx.src=URL.createObjectURL(file)         
+    5. 設定計時器載入函數 refresh() 進行運算
+        window.setInterval(refresh,50); //每0.01 秒執行
+
 -->
 
 <html>

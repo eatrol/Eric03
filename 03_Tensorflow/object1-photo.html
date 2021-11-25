@@ -1,19 +1,30 @@
+<!--
+教學名稱: 物件辨識1 - 於照片中辨識物件, 以紅框圈出
+教學網址：https://ithelp.ithome.com.tw/articles/10225146
+Goal : 辨識影片
+
+    1. 需在<head> 匯入tf.min.js 及 coco-ssd 這個模組
+    2. 在 init() 初始化 coco-ssd模組
+        model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+    3. 建立兩個Cavnas物件, 一個是原始照片, 另一個辨識後的結果
+    4. 新建 Image() 物件,將照片掛入物件            
+        const img= new Image();
+        img.src=URL.createObjectURL(file); // 產生一個隨機網址, 對應到檔案物件
+    5. 將照片檔載入函數app() 進行分析
+-->
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <title>cocossd test</title>
+    <title>cocossd - 照片辨識</title>
     <!-- TensorFlow.js Core -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js">
-    </script>
-    <!-- TensorFlow.js mobilenet model -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd">
-    </script>
-    <style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
 
-
-    </style>
+    <!-- 插入tensorflow 中的coco-ssd模組 -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+  
 </head>
 
 <body>  
@@ -25,17 +36,12 @@
      <canvas id="cvs"></canvas>
      <canvas id="detect_result"></canvas>
 
-
-
-
-
     <script>
         const color=["green","yellow","red"]
-        const ctx=document.getElementById("cvs").getContext("2d"); 
+        const cvs =document.getElementById("cvs"); 
+        const ctx =document.getElementById("cvs").getContext("2d"); 
         let model= null;
         init();
-
-
 
         async function init(){
           model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
@@ -44,6 +50,7 @@
         async function app(img) {
             const result = await model.detect(img);
             const cvs2 = document.getElementById('detect_result');
+
             cvs2.width=img.naturalWidth;
             cvs2.height=img.naturalHeight;
 
@@ -56,7 +63,7 @@
                 //three dots mean spread over object get all its properties
                 
                 context.rect(...result[i].bbox);
-                context.lineWidth =2;
+                context.lineWidth =2;           
                 context.strokeStyle = color[i%3];
                 context.fillStyle = color[i%3];
                 context.stroke();
@@ -70,17 +77,16 @@
         // 這個函數主要點選要分析的照片, 把要分析的照片存成 img , 丟到分析app裡頭去分析 
         function loadfile(input){
             const file=input.files[0];
-            console.log(file);
             const img= new Image();
             img.src=URL.createObjectURL(file); // 產生一個隨機網址, 對應到檔案物件
-            img.addEventListener("load", ()=>{
+            img.onload = function(){
                 ctx.canvas.width = img.width;
                 ctx.canvas.height = img.height;
                 ctx.drawImage(img,0,0,img.width,img.height);
 
                 // 開啟物件偵測
-                app(img);   
-            });
+                app(img);  
+            } 
         }
 
     </script>

@@ -1,3 +1,22 @@
+<!--
+教學名稱: 物件辨識4 - 以ESP32-CAM相機的影像做物件辨識, 以紅框圈出
+教學網址：https://ithelp.ithome.com.tw/articles/10225146
+Goal : 辨識串流中物件
+
+    1. 需在<head> 匯入tf.min.js 及 coco-ssd 這個模組
+    2. 在 init() 初始化 coco-ssd模組, 設定定時器執行 loadfile()
+        model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+        setInterval(loadfile,200);
+    3. 建立兩個Cavnas物件, 一個是原始照片, 另一個辨識後的結果
+    4. 在loadfile()函數中,新建 Image() 物件, 將ESP32-CAM影像掛入img物件          
+        const img= new Image();
+        img.src = "http://192.168.0.20:81/stream"
+    5. 將照片檔載入函數app() 進行分析
+
+    P.S 以下這行很重要...沒做設定會讀不到ESP32影像
+    img.setAttribute("crossOrigin",'Anonymous')
+-->
+
 <!DOCTYPE html>
 <html>
 
@@ -70,7 +89,7 @@
         const color=["green","yellow","red"]
         const ctx=document.getElementById("cvs").getContext("2d"); 
         const cvs=document.getElementById("cvs");
-        //cvs.style.display = "none";     // 把第一個canvas隱藏起來
+        cvs.style.display = "none";     // 把第一個canvas隱藏起來
 
         let model= null;
         init();
@@ -80,7 +99,7 @@
 
 
         async function init(){
-            //model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+            model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
             setInterval(loadfile,200);
         }
 
