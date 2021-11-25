@@ -1,0 +1,112 @@
+<!--
+教學名稱: 物件辨識3 - 以ESP32-CAM相機的影像做物件辨識, 以紅框圈出
+教學網址：https://ithelp.ithome.com.tw/articles/10225146
+Goal : 辨識串流中物件
+
+    1. 需在<head> 匯入tf.min.js 及 coco-ssd 這個模組
+    2. 在 init() 初始化 coco-ssd模組, 設定定時器執行 loadfile()
+        model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+        setInterval(loadfile,200);
+    3. 建立兩個Cavnas物件, 一個是原始照片, 另一個辨識後的結果
+    4. 在loadfile()函數中,新建 Image() 物件, 將ESP32-CAM影像掛入img物件          
+        const img= new Image();
+        img.src = "http://192.168.0.20:81/stream"
+    5. 將照片檔載入函數app() 進行分析
+
+    P.S 以下這行很重要...沒做設定會讀不到ESP32影像
+    img.setAttribute("crossOrigin",'Anonymous')
+-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>物件辨識3 </title>
+    <!-- TensorFlow.js Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js">
+    </script>
+    <!-- TensorFlow.js mobilenet model -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd">
+    </script>
+    <style>
+
+
+    </style>
+</head>
+
+<body>  
+    <h1>測試物件辨識</h1>
+
+    <!-- <div class="">
+        選擇一個檔案 <input type="file" onchange="loadfile(this)">
+     </div> -->
+     <!-- <img id="img" src="http://192.168.0.23:81/stream"> -->
+     <canvas id="cvs"></canvas>
+     <canvas id="detect_result"></canvas>
+
+    <script>
+        const color=["green","yellow","red"]
+        const cvs = document.getElementById("cvs");
+        const ctx = cvs.getContext("2d"); 
+        const cvs2 = document.getElementById('detect_result');
+        const ctx2 = cvs2.getContext('2d');
+        let model= null;
+        init();
+
+        async function init(){
+          model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+          setInterval(refresh,200);
+        }
+
+        async function app(img) {
+            //console.log("fa")
+            
+            const result = await model.detect(img);
+            
+            cvs2.width=img.naturalWidth;
+            cvs2.height=img.naturalHeight;
+
+            ctx2.drawImage(img, 0, 0);
+            ctx2.font = '40px Arial';
+            
+            for (let i = 0; i < result.length; i++) {
+                ctx2.beginPath();
+                //three dots mean spread over object get all its properties
+                
+                ctx2.rect(...result[i].bbox);
+                ctx2.lineWidth =2;
+                ctx2.strokeStyle = color[i%3];
+                ctx2.fillStyle = color[i%3];
+                ctx2.stroke();
+                ctx2.fillText(
+                    result[i].score.toFixed(3) + ' ' + result[i].class,   // toFixed(3): 四捨五入取小數點第三位
+                    result[i].bbox[0],
+                    result[i].bbox[1] - 5);
+            }
+        }
+
+        // 這個函數主要點選要分析的視訊, 把要ESP32-CAM的影片存成 img , 丟到分析app裡頭去分析 
+        function refresh(){
+            const img= new Image();
+            img.src = "http://192.168.0.20:81/stream"
+
+            //img.src = 'http://192.168.0.23/capture?t=' + Math.random();
+            img.setAttribute("crossOrigin",'Anonymous')
+            img.addEventListener("load", ()=>{
+                ctx.canvas.width = img.width;
+                ctx.canvas.height = img.height;
+                ctx.drawImage(img,0,0,img.width,img.height);
+
+                // 開啟物件偵測
+                app(img);   
+            });
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>

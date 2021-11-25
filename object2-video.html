@@ -1,0 +1,84 @@
+<!--
+教學名稱: 物件辨識2 - 於影片中辨識物件, 以紅框圈出
+教學網址：https://ithelp.ithome.com.tw/articles/10225146
+Goal : 辨識影片
+
+    1. 需在<head> 匯入tf.min.js 及 coco-ssd 這個模組
+    2. 在 init() 初始化 coco-ssd模組
+        model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+    3. 需向在HTML建立兩個物件,原始影片檔 及 辨識後的結果
+        <video id="xxxx"> 
+        <cavnas id="xxxx">
+    4. 建立影片檔案連結, 掛進<video>
+        xxxx.src=URL.createObjectURL(file)         
+    5. 設定計時器載入函數 refresh() 進行運算
+        window.setInterval(refresh,50); //每0.01 秒執行
+
+-->
+
+<html>
+<head>
+    <title>影片辨識</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+</head>
+
+<body>
+    <div class="">
+        選擇一個檔案 <input type="file" onchange="loadfile(this)">
+     </div>
+
+<video id="video1"></video>
+<canvas id="cvs"></canvas>
+
+<script>
+    const vd = document.getElementById("video1");
+    const ctx = document.getElementById("cvs").getContext("2d");
+    const color=["green","yellow","red"]
+    let model = null; 
+    init();
+
+
+    async function init(){
+          model = await cocoSsd.load(); // 優化速度, 在網頁一開始就載入模型
+    }
+
+    async function loadfile(input){
+        const file=input.files[0];
+        vd.src=URL.createObjectURL(file);
+        vd.play();
+        window.setInterval(refresh,50); //每0.01 秒執行
+    }
+
+    async function refresh() {   
+        ctx.canvas.width = vd.videoWidth;
+        ctx.canvas.height = vd.videoHeight;
+        ctx.drawImage(vd,0,0);
+        ctx.font = '28px Arial';
+
+        const result = await model.detect(vd);
+            
+        for (let i = 0; i < result.length; i++) {
+            ctx.beginPath();
+            //three dots mean spread over object get all its properties
+                
+            ctx.rect(...result[i].bbox);
+            ctx.lineWidth =2;
+            ctx.strokeStyle = color[i%3];
+            ctx.fillStyle = color[i%3];
+            ctx.stroke();
+            ctx.fillText(
+            result[i].score.toFixed(3) + ' ' + result[i].class,   // toFixed(3): 四捨五入取小數點第三位
+            result[i].bbox[0],
+            result[i].bbox[1] - 5);
+        }
+
+    }
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!--
+教學名稱: 臉部辨識3 - 讀取webcam鏡頭做影像辨識
+教學網址：https://www.youtube.com/watch?v=tsHVjryZJCA&t=2055s
+Goal : 取出臉部照片,背景模糊處理
+
+    1. 宣告全域辨識 facearea , 在refresh 增加程式, 利用左眼＆右眼座標算出橢圓的臉型切片
+          facearea= newPath2D    
+          facearea.ellipse(....)
+
+    2. 將橢圓臉型畫上在canvas
+        ctx.save();
+        ctx.clip(facearea);
+        ctx.drawImage(vd,0,0)
+        ctx.restore(); 
+
+    3. 在fresh補上模糊化背景, 已經畫好的臉不要蓋掉
+        ctx.filter = "blur(15px)";          // 模糊設定 數字調大越模糊
+        ctx.globalCompositeOperation = "destination-atop"   //原本已經畫好的不要蓋掉
+        ctx.drawImage(vd,0,0) 
+ 
+-->
+
+
+<html>
+<head>
+<title>webcam</title>
+
+
+</head>
+
+<body>
+<video id="video1"></video>
+<canvas id="cvs"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+
+<script>
+
+    const vd = document.getElementById("video1");
+    const ctx = document.getElementById("cvs").getContext("2d");
+    let facearea;
+    let model = null; 
+    init();
+
+    async function init(){
+        model = await blazeface.load();   // 優化速度, 在網頁一開始就載入模型
+        window.navigator.mediaDevices.getUserMedia({audio:false, video:true}).then((stream)=>{
+            vd.srcObject= stream;
+            vd.play();
+            window.setInterval(refresh,100); //每0.01 秒執行
+        });
+    }
+
+    async function refresh() {   
+        ctx.canvas.width = vd.videoWidth;
+        ctx.canvas.height = vd.videoHeight;
+        draw();
+
+        const returnTensors = false;            // 利用模型對圖面做臉部辨識, 對機械學習才需要設定這個參數, 一般使用
+        const predictions = await model.estimateFaces(vd, returnTensors); // 需要一個影片物件 圖面物件/影片物件/CANVAS 
+        
+        // 如果圖面中有臉的話, 利用迴圈把臉圈出來
+        if (predictions.length > 0) {   
+            for (let i = 0; i < predictions.length; i++) {
+                const start = predictions[i].topLeft; //0:寬,1:長
+                const end = predictions[i].bottomRight;
+                const size = [end[0] - start[0], end[1] - start[1]];
+
+                // 如果要取樣成橢圓形, 可用改用下設定 (利用左眼位置 及右眼位置 , 計算出橢圓中心)
+                facearea = new Path2D();
+                const righteye = predictions[i].landmarks[0];  //右眼
+                const lefteye =  predictions[i].landmarks[1];   //左眼
+                facearea.ellipse( (lefteye[0] + righteye[0])/2,  (lefteye[1] + righteye[1])/2,size[0]*0.5, size[0]*0.8, 0,0,2*Math.PI)
+
+                //   只把臉部圖面畫在CANVAS
+                draw(); 
+            
+            }
+        } else {
+            ctx.filter = "blur(15px)";  // 模糊設定 數字調大越模糊
+            ctx.drawImage(vd,0,0); 
+        }
+        
+
+    }
+
+    function draw(){
+        ctx.save();
+        ctx.clip(facearea);
+        ctx.drawImage(vd,0,0)
+        ctx.restore(); 
+
+        // 模糊化設定
+        ctx.save();
+        ctx.filter = "blur(15px)";  // 模糊設定 數字調大越模糊
+        ctx.globalCompositeOperation = "destination-atop"; ////原本已經畫好的不要蓋掉
+        ctx.drawImage(vd,0,0); 
+        ctx.restore();
+    }
+
+</script>
+
+
+</body>
+
+
+</html>
