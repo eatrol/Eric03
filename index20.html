@@ -35,9 +35,9 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           var gamma = event.gamma;
           //alert("hi");
           console.log(event);
-          document.getElementById("alpha").value = alpha;
-          document.getElementById("beta").value = beta;
-          document.getElementById("gamma").value = gamma;
+          document.getElementById("alpha").value = alpha.toFixed(2);
+          document.getElementById("beta").value = beta.toFixed(2);
+          document.getElementById("gamma").value = gamma.toFixed(2);
         }
         /*
         if(window.DeviceOrientationEvent) {
