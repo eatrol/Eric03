@@ -8,7 +8,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
   <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
@@ -20,7 +20,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         X軸：<input type="text" name="mydata" id="alpha"><br>
         Y軸：<input type="text" name="mydata" id="beta"><br>
         Z軸：<input type="text" name="mydata" id="gamma"><br>
-        <input type="button" value="Read data" onclick="handleFunc();" >
+        <input type="button" value="Read data" onclick="handleFunc(1);" >
         <div id="status"></div>
 
 
@@ -55,9 +55,11 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         }
       }
       
+      
 
 
     function handleFunc(event){
+        document.getElementById("status").innerHTML = "gocheck";
         console.log(event);
           var alpha = event.alpha;
           var beta = event.beta;
@@ -67,7 +69,9 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           document.getElementById("alpha").value = alpha.toFixed(2);
           document.getElementById("beta").value = beta.toFixed(2);
           document.getElementById("gamma").value = gamma.toFixed(2);
+           
         }
+       
 
 
       </script>
