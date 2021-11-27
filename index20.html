@@ -21,6 +21,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         Y軸：<input type="text" name="mydata" id="beta"><br>
         Z軸：<input type="text" name="mydata" id="gamma"><br>
         <input type="button" value="Read data" onclick="handleFunc();" >
+        <div id="status"></div>
 
 
 
@@ -37,7 +38,9 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
             .then(permissionState => {
             if (permissionState === 'granted') {
               // handle data
+              document.getElementById("status").innerText = "detecting";
               handleFunc(event);
+              
             } else {
 			    // handle denied
             alert("No allowd");
