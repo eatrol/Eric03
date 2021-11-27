@@ -53,7 +53,8 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         } else {
        // han
         document.getElementById("status").innerHTML = "else";
-        console.log(typeof DeviceOrientationEvent)
+        handleFunc(event);
+        //console.log(typeof DeviceOrientationEvent)
         }
       }
       
@@ -66,8 +67,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           var alpha = event.alpha;
           var beta = event.beta;
           var gamma = event.gamma;
-          //alert("hi");
-          
+          //alert("hi");          
           document.getElementById("alpha").value = alpha.toFixed(2);
           document.getElementById("beta").value = beta.toFixed(2);
           document.getElementById("gamma").value = gamma.toFixed(2);
