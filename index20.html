@@ -17,15 +17,15 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 </head>
 <body>
 
-        X軸：<span type="text" name="mydata" id="alpha"><br>
-        Y軸：<span type="text" name="mydata" id="beta"><br>
-        Z軸：<span type="text" name="mydata" id="gamma"><br>
+        X軸：<input type="text" name="mydata" id="alpha"><br>
+        Y軸：<input type="text" name="mydata" id="beta"><br>
+        Z軸：<input type="text" name="mydata" id="gamma"><br>
         <input type="button" value="Read data" onclick="handleFunc();" >
 
 
 
       <script>
-        /*
+        
         window.addEventListener('deviceorientation', handleFunc, false);
 
         
@@ -39,7 +39,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           document.getElementById("beta").value = beta;
           document.getElementById("gamma").value = gamma;
         }
-        */
+        /*
         if(window.DeviceOrientationEvent) {
           window.addEventListener('deviceorientation', function(event) {
           var a = document.getElementById('alpha');
@@ -59,6 +59,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 
           alert("你的瀏覽器不支援喔");
         }
+        */
 
       </script>
     
