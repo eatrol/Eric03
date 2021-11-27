@@ -8,7 +8,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
   <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
@@ -26,10 +26,33 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 
       <script>
         
-        window.addEventListener('deviceorientation', handleFunc, false);
+      //  window.addEventListener('deviceorientation', handleFunc, false);
 
-        
-        function handleFunc(evnet){
+      window.addEventListener('deviceorientation', iphoneCheck, false);
+
+      function iphoneCheck(event){
+
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+            if (permissionState === 'granted') {
+              // handle data
+              handleFunc(evnet);
+            } else {
+			    // handle denied
+            alert("No allowd");
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          });
+        } else {
+       // han
+        console.log(typeof DeviceOrientationEvent)
+        }
+      }
+
+    function handleFunc(evnet){
           var alpha = event.alpha;
           var beta = event.beta;
           var gamma = event.gamma;
