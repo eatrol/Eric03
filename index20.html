@@ -17,16 +17,18 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 </head>
 <body>
 
-        X軸：<input type="text" name="mydata" id="alpha"><br>
-        Y軸：<input type="text" name="mydata" id="beta"><br>
-        Z軸：<input type="text" name="mydata" id="gamma"><br>
+        X軸：<span type="text" name="mydata" id="alpha"><br>
+        Y軸：<span type="text" name="mydata" id="beta"><br>
+        Z軸：<span type="text" name="mydata" id="gamma"><br>
         <input type="button" value="Read data" onclick="handleFunc();" >
 
 
 
       <script>
+        /*
         window.addEventListener('deviceorientation', handleFunc, false);
 
+        
         function handleFunc(evnet){
           var alpha = event.alpha;
           var beta = event.beta;
@@ -36,6 +38,26 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           document.getElementById("alpha").value = alpha;
           document.getElementById("beta").value = beta;
           document.getElementById("gamma").value = gamma;
+        }
+        */
+        if(window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', function(event) {
+          var a = document.getElementById('alpha');
+          var b = document.getElementById('beta');
+          var g= document.getElementById('gamma');
+          alpha = event.alpha,
+          beta = event.beta,
+          gamma = event.gamma;
+
+          a.innerHTML = Math.round(alpha);
+          b.innerHTML = Math.round(beta);
+          g.innerHTML = Math.round(gamma);
+          console.log(event)
+
+          }, false);
+        }else{
+
+          alert("你的瀏覽器不支援喔");
         }
 
       </script>
