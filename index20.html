@@ -26,8 +26,8 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 
       <script>
         
-      window.addEventListener('deviceorientation', handleFunc, false);
-/*
+      //window.addEventListener('deviceorientation', handleFunc, false);
+
       window.addEventListener('deviceorientation', iphoneCheck , false);
         
       function iphoneCheck(event){
@@ -52,7 +52,8 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         }
       }
       
-*/
+
+
     function handleFunc(event){
         console.log(event);
           var alpha = event.alpha;
@@ -64,7 +65,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           document.getElementById("beta").value = beta.toFixed(2);
           document.getElementById("gamma").value = gamma.toFixed(2);
         }
-       
+
 
       </script>
     
