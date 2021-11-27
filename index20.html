@@ -26,10 +26,10 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
 
       <script>
         
-      //  window.addEventListener('deviceorientation', handleFunc, false);
-
       window.addEventListener('deviceorientation', handleFunc, false);
 
+      //window.addEventListener('deviceorientation', handleFunc, false);
+        /*
       function iphoneCheck(event){
 
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -51,6 +51,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         console.log(typeof DeviceOrientationEvent)
         }
       }
+      */
 
     function handleFunc(evnet){
           var alpha = event.alpha;
@@ -62,27 +63,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           document.getElementById("beta").value = beta.toFixed(2);
           document.getElementById("gamma").value = gamma.toFixed(2);
         }
-        /*
-        if(window.DeviceOrientationEvent) {
-          window.addEventListener('deviceorientation', function(event) {
-          var a = document.getElementById('alpha');
-          var b = document.getElementById('beta');
-          var g= document.getElementById('gamma');
-          alpha = event.alpha,
-          beta = event.beta,
-          gamma = event.gamma;
-
-          a.innerHTML = Math.round(alpha);
-          b.innerHTML = Math.round(beta);
-          g.innerHTML = Math.round(gamma);
-          console.log(event)
-
-          }, false);
-        }else{
-
-          alert("你的瀏覽器不支援喔");
-        }
-        */
+       
 
       </script>
     
