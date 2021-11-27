@@ -1,0 +1,44 @@
+<!--
+教學名稱: 20-讀取手機GYRO
+教學網址: https://iter01.com/49759.html
+
+Tag: #javascript #google apps
+
+Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+        X軸：<input type="text" name="mydata" id="alpha"><br>
+        Y軸：<input type="text" name="mydata" id="beta"><br>
+        Z軸：<input type="text" name="mydata" id="gamma"><br>
+        <input type="button" value="Read data" onclick="handleFunc();" >
+
+
+
+      <script>
+        window.addEventListener('deviceorientation', handleFunc, false);
+
+        function handleFunc(evnet){
+          var alpha = event.alpha;
+          var beta = event.beta;
+          var gamma = event.gamma;
+          //alert("hi");
+          console.log(event);
+          document.getElementById("alpha").value = alpha;
+          document.getElementById("beta").value = beta;
+          document.getElementById("gamma").value = gamma;
+        }
+
+      </script>
+    
+</body>
+</html>
