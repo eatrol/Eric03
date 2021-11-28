@@ -25,12 +25,15 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
     <title>Document</title>
 </head>
 <body>
+
+  <button onclick="goplay();">播放</button>
   <div class="">
     <video id="video1"></video>
     <canvas id="cvs"></canvas>
   </div>
 
       <div id="urphoneis"></div>
+     
         X軸：<input type="text" name="mydata" id="alpha"><br>
         Y軸：<input type="text" name="mydata" id="beta"><br>
         Z軸：<input type="text" name="mydata" id="gamma"><br>
@@ -83,11 +86,15 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
     function init(){
         window.navigator.mediaDevices.getUserMedia({audio:false, video:true}).then((stream)=>{
             vd.srcObject= stream;
-            vd.play();
+            vd.autoplay = true;
+            //vd.play();
             //vd.style.display = "none";
         });
     }
 
+    function goplay(){
+      vd.play();
+    }
     function refresh(){
         var scX =  window.innerWidth;
         var scY = window.innerWidth/vd.videoWidth * vd.videoHeight;
