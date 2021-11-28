@@ -70,7 +70,7 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
       var isiOS = detectBrowser.isIOs() // true or false
 
       init();       // 啟動相機
-      setInterval(refresh,100); // 讓Canvas 畫出webcam的影像, 每0.1秒
+      //setInterval(refresh,100); // 讓Canvas 畫出webcam的影像, 每0.1秒
       
       if(isiOS){
         getp();     //Iphone手機需事先需取得權限
@@ -147,6 +147,7 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
       document.getElementById("alpha").value = alpha.toFixed(2);
       document.getElementById("beta").value = beta.toFixed(2);
       document.getElementById("gamma").value = gamma.toFixed(2);
+      refresh();
     }
 
     </script>
