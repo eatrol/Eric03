@@ -26,7 +26,8 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
 </head>
 <body>
 
-  <button onclick="goplay();">播放</button>
+  <button onclick="vd.play();">開始播放</button>
+  <button onclick="vd.style.display='none';">關閉</button>
   <div class="">
     <video id="video1"></video>
     <canvas id="cvs"></canvas>
@@ -92,11 +93,6 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
         });
     }
 
-    function goplay(){
-      vd.play();
-      vd.style.display = "none";
-      
-    }
     function refresh(){
         
         var scX =  window.innerWidth*0.95;
