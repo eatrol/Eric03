@@ -18,7 +18,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
     <title>Document</title>
 </head>
 <body>
-
+      <div id="urphoneis"></div>
         X軸：<input type="text" name="mydata" id="alpha"><br>
         Y軸：<input type="text" name="mydata" id="beta"><br>
         Z軸：<input type="text" name="mydata" id="gamma"><br>
@@ -51,7 +51,9 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
       // 主程式開始 =======================================
       var showStatus = document.getElementById("status");
       var isiOS = detectBrowser.isIOs() // true or false
-      console.log(isiOS);
+
+      document.getElementById("urphoneis").innerHTML = isiOS;
+      //console.log(isiOS);
 
       if(isiOS){
         if(window.DeviceOrientationEvent.requestPermission){
