@@ -88,7 +88,7 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
             vd.srcObject= stream;
             vd.autoplay = true;
             //vd.play();
-            //vd.style.display = "none";
+            vd.style.display = "none";
         });
     }
 
@@ -96,8 +96,8 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
       vd.play();
     }
     function refresh(){
-        var scX =  window.innerWidth;
-        var scY = window.innerWidth/vd.videoWidth * vd.videoHeight;
+        var scX =  window.innerWidth*0.9;
+        var scY = window.innerWidth*0.9/vd.videoWidth * vd.videoHeight;
         //ctx.canvas.width = vd.videoWidth;
         //ctx.canvas.width = window.innerWidth;
 
