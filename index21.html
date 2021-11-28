@@ -1,19 +1,14 @@
 <!--
-教學名稱: 21-讀取手機GYRO-for IPhone user
-教學網址: https://juejin.cn/post/6844904138478256141
-
-偵測是否為Iphone 教學:
-https://mrcodingroom.freesite.host/js-%E5%81%B5%E6%B8%AC%E8%A3%9D%E7%BD%AE%E6%98%AF%E5%90%A6%E7%82%BAios%E6%88%96ipad/
+教學名稱: 21-透過鏡頭顯示角度線
+教學網址: 參考以下兩個網頁
+   index20-1.html -> 讀取手機GYRO -for IPhone
+   camera.html -> 打開手機前鏡頭
 
 Tag: #javascript 
 
-Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用者權限
-    1. 需先偵測是否為iphone 透過 const detectBrowser = {...} 這串函數來取得
-        detectBrowser.isIOs() 為 true , 表示為iphone手機
-    2. 透過 getp()={...} 函數來取得使用者權限
-    3. 如果使用者同意, 加入網頁監聽事件
-      window.addEventListener('deviceorientation', handleFunc, false);
-      
+Find : 1. 用手機打開前鏡頭, 需用網頁點擊才能播放(筆電可以自動播)
+       2. 先需播放之能設定 vd.style.display ="none"
+          不然影像會顯示不出來
 -->
 
 <!DOCTYPE html>
@@ -22,7 +17,7 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
     <meta charset="UTF-8">
   <!--- <meta http-equiv="X-UA-Compatible" content="IE=edge"> --> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>螢幕顯示角度線</title>
 </head>
 <body>
 
@@ -33,15 +28,14 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
     <canvas id="cvs"></canvas>
   </div>
 
-      <div id="urphoneis"></div>
-     
-        X軸：<input type="text" name="mydata" id="alpha"><br>
-        Y軸：<input type="text" name="mydata" id="beta"><br>
-        Z軸：<input type="text" name="mydata" id="gamma"><br>
-        <input type="button" value="IOS用戶,請按我取得權限" onclick="getp();" >
-
+  <div id="urphoneis"></div>
+    <div> 
+      X軸：<input type="text" name="mydata" id="alpha"><br>
+      Y軸：<input type="text" name="mydata" id="beta"><br>
+      Z軸：<input type="text" name="mydata" id="gamma"><br>
+      <input type="button" value="IOS用戶,請按我取得權限" onclick="getp();" >
       <div id="status"></div>
-
+    </div>
 
       <script>
       
@@ -61,20 +55,14 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
           return false;
         },
       }
-
-
       
       // 主程式開始 =======================================
-
       const vd = document.getElementById("video1");
       const ctx = document.getElementById("cvs").getContext("2d");
-    
-
       var showStatus = document.getElementById("status");
       var isiOS = detectBrowser.isIOs() // true or false
 
       init();       // 啟動相機
-      //setInterval(refresh,100); // 讓Canvas 畫出webcam的影像, 每0.1秒
       
       if(isiOS){
         getp();     //Iphone手機需事先需取得權限
@@ -88,8 +76,6 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
         window.navigator.mediaDevices.getUserMedia({audio:false, video:true}).then((stream)=>{
             vd.srcObject= stream;
             vd.autoplay = true;
-            //vd.play();
-            //vd.style.display = "none";
         });
     }
 
