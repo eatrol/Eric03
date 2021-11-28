@@ -25,6 +25,11 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
     <title>Document</title>
 </head>
 <body>
+  <div class="">
+    <video id="video1"></video>
+    <canvas id="cvs"></canvas>
+  </div>
+
       <div id="urphoneis"></div>
         X軸：<input type="text" name="mydata" id="alpha"><br>
         Y軸：<input type="text" name="mydata" id="beta"><br>
@@ -53,30 +58,58 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
         },
       }
 
+
+      
       // 主程式開始 =======================================
+
+      const vd = document.getElementById("video1");
+      const ctx = document.getElementById("cvs").getContext("2d");
+    
+
       var showStatus = document.getElementById("status");
       var isiOS = detectBrowser.isIOs() // true or false
 
-      document.getElementById("urphoneis").innerHTML = isiOS;
-
+      init();       // 啟動相機
+      setInterval(refresh,100); // 讓Canvas 畫出webcam的影像, 每0.1秒
+      
       if(isiOS){
-        getp();     // 需取得權限
+        getp();     //Iphone手機需事先需取得權限
       } else{
         goGrante();
       }
+    
     // ==================================================
 
-    // Show GYRO value on textbox
-    function handleFunc(event){
-        document.getElementById("status").innerHTML = "gochecking2";
-        console.log(event);
-          var alpha = event.alpha;
-          var beta = event.beta;
-          var gamma = event.gamma;        
-          document.getElementById("alpha").value = alpha.toFixed(2);
-          document.getElementById("beta").value = beta.toFixed(2);
-          document.getElementById("gamma").value = gamma.toFixed(2);
+    function init(){
+        window.navigator.mediaDevices.getUserMedia({audio:false, video:true}).then((stream)=>{
+            vd.srcObject= stream;
+            vd.play();
+            vd.style.display = "none";
+        });
+    }
 
+    function refresh(){
+        var scX =  window.innerWidth;
+        var scY = window.innerWidth/vd.videoWidth * vd.videoHeight;
+        //ctx.canvas.width = vd.videoWidth;
+        //ctx.canvas.width = window.innerWidth;
+
+        ctx.canvas.width = scX;
+        ctx.canvas.height = scY;
+        ctx.drawImage(vd,0,0,scX,scY);
+
+        ctx.strokeStyle="red";
+        ctx.beginPath();
+        ctx.moveTo(0,ctx.canvas.height/2);
+        ctx.lineTo(ctx.canvas.width,ctx.canvas.height/2);
+        ctx.closePath();
+        ctx.stroke();
+
+        ctx.font = '12pt Arial';
+        ctx.fillStyle="blue";
+        ctx.textAlign = 'center';
+        var angle = document.getElementById("beta").value;
+        ctx.fillText(angle,ctx.canvas.width/2,ctx.canvas.height/2-10);
     }
 
     // 取得用戶允許權限
@@ -102,6 +135,18 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
        
     function goGrante(){
       window.addEventListener('deviceorientation', handleFunc, false);  // 將手機姿態改變事件加入, 偵測到執行 handleFunc()
+    }
+    
+    // Show GYRO value on textbox
+    function handleFunc(event){
+      document.getElementById("status").innerHTML = "gochecking2";
+      console.log(event);
+      var alpha = event.alpha;
+      var beta = event.beta;
+      var gamma = event.gamma;        
+      document.getElementById("alpha").value = alpha.toFixed(2);
+      document.getElementById("beta").value = beta.toFixed(2);
+      document.getElementById("gamma").value = gamma.toFixed(2);
     }
 
     </script>

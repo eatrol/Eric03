@@ -1,12 +1,15 @@
 <!--
-教學名稱: 20-讀取手機GYRO
+教學名稱: 20-讀取手機GYRO (不適用於iphone手機)
 教學網址: https://iter01.com/49759.html
 
-https://blog.csdn.net/qq_41990338/article/details/114845446
+Tag: #javascript
 
-Tag: #javascript #google apps
-
-Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
+Goal : 1. 加入手機監聽事件, 偵測手機是否有改變姿態 
+          window.addEventListener('deviceorientation', handleFunc, false);
+       2. 若有改變,在 handleFunc(xxx) ={} 讀出GYRO數值
+          xxx.alpha -> 方位角
+          xxx.beta -> 仰角
+          xxx.gamma -> 翻滾角 
 -->
 
 <!DOCTYPE html>
@@ -25,58 +28,19 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         <input type="button" value="Read data" onclick="handleFunc();" >
         <div id="status"></div>
 
-
-
       <script>
         
       window.addEventListener('deviceorientation', handleFunc, false);
-      /*
-      window.addEventListener('deviceorientation', iphoneCheck , false);
-        
-      function iphoneCheck(event){
 
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-            if (permissionState === 'granted') {
-              // handle data
-              document.getElementById("status").innerHTML = "detecting";
-              handleFunc(event);
-              
-            } else {
-			    // handle denied
-          document.getElementById("status").innerHTML = "not allowed";
-            }
-          })
-          .catch((err) => {
-            document.getElementById("status").innerHTML = "something error";
-            console.log(err)
-          });
-        } else {
-       // han
-        document.getElementById("status").innerHTML = "else";
-        handleFunc(event);
-        //console.log(typeof DeviceOrientationEvent)
-        }
-      }
-      
-      
-      */
-
-    function handleFunc(event){
+      function handleFunc(event){
         document.getElementById("status").innerHTML = "gochecking2";
-        console.log(event);
           var alpha = event.alpha;
           var beta = event.beta;
-          var gamma = event.gamma;
-          //alert("hi");          
+          var gamma = event.gamma;          
           document.getElementById("alpha").value = alpha.toFixed(2);
           document.getElementById("beta").value = beta.toFixed(2);
           document.getElementById("gamma").value = gamma.toFixed(2);
-           
         }
-       
-
 
       </script>
     
