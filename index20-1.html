@@ -22,7 +22,8 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         X軸：<input type="text" name="mydata" id="alpha"><br>
         Y軸：<input type="text" name="mydata" id="beta"><br>
         Z軸：<input type="text" name="mydata" id="gamma"><br>
-        <input type="button" value="讀取資料2" onclick="handleFunc(1);" >
+        <input type="button" value="取得權限" onclick="getp();" >
+
         <div id="status"></div>
 
 
@@ -95,7 +96,26 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
           document.getElementById("beta").value = beta.toFixed(2);
           document.getElementById("gamma").value = gamma.toFixed(2);
 
+      }
+
+      function getp(){
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(permissionState => {
+          if (permissionState === 'granted') {
+            showStatus.innerHTML = "IOS用戶,用戶允許";
+          } else {
+            showStatus.innerHTML = "IOS用戶,不允許";
+          }
+        })
+          .catch((err) => {
+            showStatus.innerHTML = "錯誤";
+            console.log(err)
+          });
+        } else {
+          showStatus.innerHTML = "不明原因";
+        console.log(typeof DeviceOrientationEvent)
         }
+      }
        
 
 
