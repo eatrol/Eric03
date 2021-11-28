@@ -103,6 +103,7 @@ Goal : 透過網頁呼叫Google apps,發送Line 權杖訊息
         DeviceOrientationEvent.requestPermission().then(permissionState => {
           if (permissionState === 'granted') {
             showStatus.innerHTML = "IOS用戶,用戶允許";
+            monitor();
           } else {
             showStatus.innerHTML = "IOS用戶,不允許";
           }
