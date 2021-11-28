@@ -101,7 +101,7 @@ Find : 1. 用手機打開前鏡頭, 需用網頁點擊才能播放(筆電可以�
         ctx.fillStyle="blue";
         ctx.textAlign = 'center';
         var angle = 90-document.getElementById("beta").value;
-        ctx.fillText(angle,ctx.canvas.width/2,ctx.canvas.height/2-10);
+        ctx.fillText(angle.toFixed(2),ctx.canvas.width/2,ctx.canvas.height/2-10);
     }
 
     // 取得用戶允許權限
