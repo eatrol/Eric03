@@ -88,16 +88,19 @@ Goal : Iphone不能直接讀取GYRO資料,需要透過網頁方式取得使用�
             vd.srcObject= stream;
             vd.autoplay = true;
             //vd.play();
-            vd.style.display = "none";
+            //vd.style.display = "none";
         });
     }
 
     function goplay(){
       vd.play();
+      vd.style.display = "none";
+      
     }
     function refresh(){
-        var scX =  window.innerWidth*0.9;
-        var scY = window.innerWidth*0.9/vd.videoWidth * vd.videoHeight;
+        
+        var scX =  window.innerWidth*0.95;
+        var scY = window.innerWidth*0.95/vd.videoWidth * vd.videoHeight;
         //ctx.canvas.width = vd.videoWidth;
         //ctx.canvas.width = window.innerWidth;
 
