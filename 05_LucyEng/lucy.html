@@ -52,6 +52,8 @@
         var modalimg = document.getElementById("modalimg");
 
         // 載入資料庫
+        var lucy_bg = "bg4.png"
+
         var lucy_word = "Truck"
         var lucy_word_size = window.innerWidth/5;
         var lucy_sound = "https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3";
@@ -64,25 +66,35 @@
         function init(){
             cvs.height = window.innerHeight;    // 設定外觀尺寸
             cvs.width = window.innerWidth;
+
             ctx.font = lucy_word_size + 'pt Calibri';   // 設定字體大小
             ctx.textAlign = 'center'                    // 設定字體致中
-            ctx.fillStyle="brown";                      // 設定字體顏色
+            ctx.fillStyle="white";                      // 設定字體顏色
             modalimg.src = "truck.png"
             modalimg.style.width = 400*factor + 'px';
-
         }
 
-        // 宣告按件
+        // 宣告按鍵
         var myobs= [];
         myobs[0]= new newbtn(window.innerWidth/2-40*factor,window.innerHeight/2+80*factor,600*factor/7,600*factor/7,"lucy-sound.png",lucy_sound);
         myobs[1]= new newbtn(window.innerWidth/2+100*factor,window.innerHeight/2+60*factor,600*factor/6,600*factor/6,"answer.png","coin.mp3");
         myobs[2]= new newbtn(window.innerWidth/2+200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"chinese.png","");
 
+        var mybg= [];
+        mybg[0]=  new newbg(0,0, window.innerWidth, window.innerHeight,lucy_bg);
+        //mybg[1] = new newbg(window.innerWidth*0.1,window.innerHeight*0.1,window.innerWidth*0.8,window.innerHeight*0.5,"menu.png")
+        console.log()
+
         window.onload= function() {
             init();
-            ctx.fillText(lucy_word, cvs.width/2, cvs.height/2);
+  
             coinsound = new newsound(lucy_sound);
+            for(var i=0;i<mybg.length; i++){
+                mybg[i].draw();
+            }
+        
 
+            ctx.fillText(lucy_word, cvs.width/2, cvs.height/2);
             for (var i=0; i< myobs.length ; i++){
                 var btn = myobs[i];
                 btn.draw(); //畫出位置
@@ -133,7 +145,7 @@
 
 
  
-    
+    // 物件1 : 可觸碰的按鍵
     function newbtn(btnx,btny,btnw,btnh,btnpic,btnsound){
         this.x = btnx;
         this.y = btny;
@@ -157,9 +169,21 @@
             }else{
                 return false;
             }
-        
         } 
-        
+    }
+
+    // 物件2 : 圖片
+    function newbg(btnx,btny,btnw,btnh,btnpic){
+        this.x = btnx;
+        this.y = btny;
+        this.width = btnw;
+        this.height = btnh; 
+        this.image = new Image()
+        this.image.src = btnpic;
+
+        this.draw = function(){
+            ctx.drawImage(this.image,this.x, this.y , this.width ,this.height);
+        }
     }
 
 
