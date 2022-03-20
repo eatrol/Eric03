@@ -213,8 +213,11 @@
 
     // canvas 觸碰 : 開始畫線 --------------------------
     cvs2.ontouchstart = function (e) {
-        ctx.strokeStyle = '#00f';
-        ctx.beginPath();
+        ctx2.strokeStyle = '#00f';
+        ctx2.lineWidth = 30;
+        ctx2.lineCap = 'round';
+        ctx2.globalAlpha = 1; 
+        ctx2.beginPath();
         started = true;
         e.preventDefault();     // 觸碰要增加這行
     }
@@ -223,8 +226,8 @@
     cvs2.ontouchmove = function (e) {
         this.touch=e.targetTouches[0];
         if (started) {
-            ctx.lineTo(this.touch.pageX, this.touch.pageY);
-            ctx.stroke();
+            ctx2.lineTo(this.touch.pageX, this.touch.pageY);
+            ctx2.stroke();
         }
         e.preventDefault();     // 觸碰要增加這行
     }
@@ -236,10 +239,6 @@
         }
         e.preventDefault();
     }
-    
-
-
-
     
  
     // 物件1 : 可觸碰的按鍵
