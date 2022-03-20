@@ -24,6 +24,20 @@
         text-align: center;
     }
 
+    .drawmodal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.8); /* Black w/ opacity */
+        text-align: center;
+    }
 
 
     </style>
@@ -38,17 +52,31 @@
         </div>
         <span class="close">&times;<img src="close.png" style="width:80px;height:auto;"></span>
     </div>
+
+    <!--繪畫板功能-->
+    <div id="drawModal" class="drawmodal">
+        <!-- Modal content -->
+        <div  class="modal-content">
+            <canvas id="drawCanvas" width="800px" height="500px" style="border:1px solid #aaaaaa"></canvas>
+        </div><br>
+        <span class="close">&times;<img src="close.png" style="width:80px;height:auto;"></span>
+    </div>
+
     <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000" ></canvas>
 
     <script type="text/javascript">
         var cvs=document.getElementById("cvs");
         var ctx=cvs.getContext("2d");
+        var cvs2=document.getElementById("drawCanvas");
+        var ctx2=cvs2.getContext("2d");
         var touchX,touchY;
+        var started = false
 
         // Get the modal
         var modal = document.getElementById("myModal");
+        var drawmodal = document.getElementById("drawModal");
         var span = document.getElementsByClassName("close")[0];
-      
+        var drawspan = document.getElementsByClassName("close")[1];
         var modalimg = document.getElementById("modalimg");
 
         // 載入資料庫
@@ -67,6 +95,9 @@
             cvs.height = window.innerHeight;    // 設定外觀尺寸
             cvs.width = window.innerWidth;
 
+            cvs2.width = window.innerWidth; 
+            cvs2.height = window.innerHeight/2;
+
             ctx.font = lucy_word_size + 'pt Calibri';   // 設定字體大小
             ctx.textAlign = 'center'                    // 設定字體致中
             ctx.fillStyle="white";                      // 設定字體顏色
@@ -79,6 +110,7 @@
         myobs[0]= new newbtn(window.innerWidth/2-40*factor,window.innerHeight/2+80*factor,600*factor/7,600*factor/7,"lucy-sound.png",lucy_sound);
         myobs[1]= new newbtn(window.innerWidth/2+100*factor,window.innerHeight/2+60*factor,600*factor/6,600*factor/6,"answer.png","coin.mp3");
         myobs[2]= new newbtn(window.innerWidth/2+200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"chinese.png","");
+        myobs[3]= new newbtn(window.innerWidth/2-200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"button03.png","");
 
         var mybg= [];
         mybg[0]=  new newbg(0,0, window.innerWidth, window.innerHeight,lucy_bg);
@@ -123,27 +155,60 @@
         touchX = e.offsetX;
         touchY = e.offsetY;
         myobs[0].isTouch()
-        if (myobs[1].isTouch()){
-            modal.style.display = "block";
-        }
+        if (myobs[1].isTouch()){ modal.style.display = "block"; }
         if (myobs[2].isTouch()){
             lucy_speak.sound.src = "https://s.yimg.com/bg/dict/dreye/live/m/" + "t" +".mp3" 
             setTimeout(lucy_speak.play(),2000)
             //lucy_speak.play();
-           
-            lucy_speak.sound.src = "https://s.yimg.com/bg/dict/dreye/live/m/" + "r" +".mp3" 
-            setTimeout(lucy_speak.play(),2000)
-      
         }
+
+        if (myobs[3].isTouch()){ 
+            ctx2.clearRect(0,0,8000,8000);
+            drawmodal.style.display = "block"; 
+        }
+
     
     }
 
 
     span.onclick = function() {
         modal.style.display = "none";
+       // drawmodal.style.display="none";
+    }
+
+    drawspan.onclick = function() {
+       // modal.style.display = "none";
+        drawmodal.style.display="none";
     }
 
 
+
+    // canvas 滑鼠按下 ：開啟 beginPath 
+    cvs2.onmousedown = function (e) {
+        //e.preventDefault();
+        ctx2.strokeStyle = '#00f';
+        ctx2.lineWidth = 30;
+        ctx2.lineCap = 'round';
+        ctx2.globalAlpha = 1; 
+        ctx2.beginPath();
+        started = true;
+        //buffer.push({ "x": e.offsetX, "y": e.offsetY });
+    }
+
+    // canvas 滑鼠移動 : 開始畫線
+    cvs2.onmousemove = function (e) {
+        if (started) {
+            ctx2.lineTo(e.offsetX, e.offsetY);
+            ctx2.stroke();
+        }
+    }
+
+    // canvas 滑鼠移動
+    cvs2.onmouseup = function (e) {
+        if (started) {
+            started = false;
+        }
+    }
  
     // 物件1 : 可觸碰的按鍵
     function newbtn(btnx,btny,btnw,btnh,btnpic,btnsound){
