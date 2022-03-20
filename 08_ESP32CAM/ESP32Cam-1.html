@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title>High Temperature Monitor</title>
+
+
+    </head>
+    <body>
+      <canvas id="cvs" ></canvas>
+
+        <script>
+          const ctx=document.getElementById("cvs").getContext("2d"); 
+          const cvs=document.getElementById("cvs");
+          loadfile();
+  
+          function loadfile(){
+            const img= new Image();
+            //img.src=URL.createObjectURL(file); // 產生一個隨機網址, 對應到檔案物件
+  
+            img.src = "http://192.168.0.21:81/stream"
+            img.setAttribute("crossOrigin",'Anonymous')
+            img.addEventListener("load", ()=>{
+              //ctx.canvas.width = img.width;
+              //ctx.canvas.height = img.height;
+              //ctx.drawImage(img,0,0,ctx.canvas.width,ctx.canvas.width*0.75);
+              ctx.drawImage(img,0,0);
+            // 開啟物件偵測
+            //app(img);   
+          });
+        }
+      </script>
+    
+    
+    </body>
+  </html>
+  

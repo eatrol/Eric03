@@ -138,7 +138,7 @@ Goal : 辨識串流中物件
             const img= new Image();
             //img.src=URL.createObjectURL(file); // 產生一個隨機網址, 對應到檔案物件
 
-            img.src = "http://192.168.0.20:81/stream"
+            img.src = "http://192.168.0.21:81/stream"
             img.setAttribute("crossOrigin",'Anonymous')
             img.addEventListener("load", ()=>{
                 ctx.canvas.width = img.width;
@@ -154,7 +154,7 @@ Goal : 辨識串流中物件
         function moveto(content){
             var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
             
-            req.open("get","http://192.168.0.19/"+ content,true ); 
+            req.open("get","http://192.168.0.20/"+ content,true ); 
             req.setRequestHeader('Access-Control-Allow-Origin', '*');
             
             
