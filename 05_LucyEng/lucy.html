@@ -91,9 +91,6 @@
         var lucy_letter = ['t','r','u','c','k'];
         var lucy_speak = new newsound("https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3")
  
-        cvs2.addEventListener('mousedown',mouseDown);
-        cvs2.addEventListener('mousemove',mouseMove);
-        cvs2.addEventListener('mouseup',mouseUp);
 
         function init(){
             cvs.height = window.innerHeight;    // 設定外觀尺寸
@@ -187,7 +184,7 @@
 
 
     // canvas 滑鼠按下 ：開啟 beginPath 
-    function mouseDown(e){
+    cvs2.onmousedown = function (e) {
         ctx2.strokeStyle = '#00f';
         ctx2.lineWidth = 30;
         ctx2.lineCap = 'round';
@@ -198,19 +195,19 @@
     }
 
     // canvas 滑鼠移動 : 開始畫線
-    function mouseMove(e){
+    cvs2.onmousemove = function (e) {
         if (started) {
             ctx2.lineTo(e.offsetX, e.offsetY);
             ctx2.stroke();
         }
     }
     // canvas 滑鼠移動
-    function mouseUp(e){
+    cvs2.onmouseup = function (e) {
         if (started) {
             started = false;
         }
     }
-
+    // --------------------------------
     // canvas 觸碰 : 開始畫線 --------------------------
     cvs2.ontouchstart = function (e) {
         ctx2.strokeStyle = '#00f';
@@ -225,8 +222,9 @@
     // canvas 觸碰移動 : 開始畫線
     cvs2.ontouchmove = function (e) {
         this.touch=e.targetTouches[0];
+        this.touch.pageY =this.touch.pageY-100;  //要做修正, CAVNAS跟觸碰區有距離差
         if (started) {
-            ctx2.lineTo(this.touch.pageX, this.touch.pageY);
+            ctx2.lineTo(this.touch.pageX, this.touch.pageY);  
             ctx2.stroke();
         }
         e.preventDefault();     // 觸碰要增加這行
