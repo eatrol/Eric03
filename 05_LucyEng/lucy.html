@@ -197,7 +197,7 @@
     // canvas 滑鼠移動 : 開始畫線
     cvs2.onmousemove = function (e) {
         if (started) {
-            ctx2.lineTo(e.offsetX, e.offsetY);
+            ctx2.lineTo(e.offsetX, e.offsetY-100);
             ctx2.stroke();
         }
     }
@@ -222,9 +222,9 @@
     // canvas 觸碰移動 : 開始畫線
     cvs2.ontouchmove = function (e) {
         this.touch=e.targetTouches[0];
-        this.touch.pageY =this.touch.pageY-100;  //要做修正, CAVNAS跟觸碰區有距離差
+        //this.touch.pageY =this.touch.pageY-100;  //要做修正, CAVNAS跟觸碰區有距離差
         if (started) {
-            ctx2.lineTo(this.touch.pageX, this.touch.pageY);  
+            ctx2.lineTo(this.touch.pageX, this.touch.pageY-100);  
             ctx2.stroke();
         }
         e.preventDefault();     // 觸碰要增加這行
