@@ -184,7 +184,8 @@
 
 
     // canvas 滑鼠按下 ：開啟 beginPath 
-    cvs2.onmousedown = function (e) {
+    cvs2.ontouchstart = function (e) {
+    //cvs2.onmousedown = function (e) {
         //e.preventDefault();
         ctx2.strokeStyle = '#00f';
         ctx2.lineWidth = 30;
@@ -196,19 +197,24 @@
     }
 
     // canvas 滑鼠移動 : 開始畫線
-    cvs2.onmousemove = function (e) {
+    cvs2.ontouchmove = function (e) {
+    //cvs2.onmousemove = function (e) {
         if (started) {
             ctx2.lineTo(e.offsetX, e.offsetY);
             ctx2.stroke();
         }
     }
-
     // canvas 滑鼠移動
-    cvs2.onmouseup = function (e) {
+    cvs2.ontouchend = function (e) {
+    //cvs2.onmouseup = function (e) {
         if (started) {
             started = false;
         }
     }
+
+
+
+    
  
     // 物件1 : 可觸碰的按鍵
     function newbtn(btnx,btny,btnw,btnh,btnpic,btnsound){
