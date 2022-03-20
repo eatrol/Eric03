@@ -91,6 +91,10 @@
         var lucy_letter = ['t','r','u','c','k'];
         var lucy_speak = new newsound("https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3")
  
+        cvs2.addEventListener('mousedown',mouseDown);
+        cvs2.addEventListener('mousemove',mouseMove);
+        cvs2.addEventListener('mouseup',mouseUp);
+
         function init(){
             cvs.height = window.innerHeight;    // 設定外觀尺寸
             cvs.width = window.innerWidth;
@@ -182,35 +186,57 @@
     }
 
 
-
     // canvas 滑鼠按下 ：開啟 beginPath 
-    cvs2.ontouchstart = function (e) {
-    //cvs2.onmousedown = function (e) {
-        //e.preventDefault();
+    function mouseDown(e){
         ctx2.strokeStyle = '#00f';
         ctx2.lineWidth = 30;
         ctx2.lineCap = 'round';
         ctx2.globalAlpha = 1; 
         ctx2.beginPath();
         started = true;
-        //buffer.push({ "x": e.offsetX, "y": e.offsetY });
+        //e.preventDefault();
     }
 
     // canvas 滑鼠移動 : 開始畫線
-    cvs2.ontouchmove = function (e) {
-    //cvs2.onmousemove = function (e) {
+    function mouseMove(e){
         if (started) {
             ctx2.lineTo(e.offsetX, e.offsetY);
             ctx2.stroke();
         }
     }
     // canvas 滑鼠移動
-    cvs2.ontouchend = function (e) {
-    //cvs2.onmouseup = function (e) {
+    function mouseUp(e){
         if (started) {
             started = false;
         }
     }
+
+    // canvas 觸碰 : 開始畫線 --------------------------
+    cvs2.ontouchstart = function (e) {
+        ctx.strokeStyle = '#00f';
+        ctx.beginPath();
+        started = true;
+        e.preventDefault();     // 觸碰要增加這行
+    }
+
+    // canvas 觸碰移動 : 開始畫線
+    cvs2.ontouchmove = function (e) {
+        this.touch=e.targetTouches[0];
+        if (started) {
+            ctx.lineTo(this.touch.pageX, this.touch.pageY);
+            ctx.stroke();
+        }
+        e.preventDefault();     // 觸碰要增加這行
+    }
+
+    // canvas 觸碰結束
+    cvs2.ontouchend = function (e) {
+        if (started) {
+            started = false;
+        }
+        e.preventDefault();
+    }
+    
 
 
 
