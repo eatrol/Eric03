@@ -197,7 +197,7 @@
     // canvas 滑鼠移動 : 開始畫線
     cvs2.onmousemove = function (e) {
         if (started) {
-            ctx2.lineTo(e.offsetX, e.offsetY-100);
+            ctx2.lineTo(e.offsetX, e.offsetY);
             ctx2.stroke();
         }
     }
