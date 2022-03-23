@@ -28,9 +28,10 @@
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
         z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        padding-top: 0px; /* Location of the box */
         left: 0;
         top: 0;
+        margin:8px;
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         overflow: auto; /* Enable scroll if needed */
@@ -50,7 +51,7 @@
         <div class="modal-content">
           <img id="modalimg" style="width:600px;height:auto;">
         </div>
-        <span class="close">&times;<img src="close.png" style="width:80px;height:auto;"></span>
+        <span class="close">&times;<img src="static/lucy/close.png" style="width:80px;height:auto;"></span>
     </div>
 
     <!--繪畫板功能-->
@@ -59,11 +60,12 @@
         <div  class="modal-content">
             <canvas id="drawCanvas" width="800px" height="500px" style="border:1px solid #aaaaaa"></canvas>
         </div><br>
-        <span class="close">&times;<img src="close.png" style="width:80px;height:auto;"></span>
+        <span class="close">&times;<img src="static/lucy/close.png" style="width:80px;height:auto;"></span>
+        <div id="mycount" style="color: brown;"></div>
     </div>
 
-    <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000" ></canvas>
-
+    <canvas id="cvs" width="800px" height="600px" style="border:1px solid #000000;margin:0px;" ></canvas>
+    <button onclick="getpixed();">get pixel</button>
     <script type="text/javascript">
         var cvs=document.getElementById("cvs");
         var ctx=cvs.getContext("2d");
@@ -71,6 +73,7 @@
         var ctx2=cvs2.getContext("2d");
         var touchX,touchY;
         var started = false
+        var myVar;
 
         // Get the modal
         var modal = document.getElementById("myModal");
@@ -80,16 +83,15 @@
         var modalimg = document.getElementById("modalimg");
 
         // 載入資料庫
-        var lucy_bg = "bg4.png"
+        var lucy_bg = "static/lucy/bg4.png"
 
-        var lucy_word = "Truck"
+        var lucy_word = "truck"
         var lucy_word_size = window.innerWidth/5;
         var lucy_sound = "https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3";
-        var lucy_img = "truck.png"
-        var lucy_pic = "mario1.png";
+        var lucy_img = "static/lucy/truck.png"  // 尺寸800*600
         var factor = window.innerWidth/800;
         var lucy_letter = ['t','r','u','c','k'];
-        var lucy_speak = new newsound("https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3")
+        var lucy_speak = new newsound("https://s.yimg.com/bg/dict/dreye/live/m/t.mp3")
  
 
         function init(){
@@ -97,22 +99,23 @@
             cvs.width = window.innerWidth;
 
             cvs2.width = window.innerWidth; 
-            cvs2.height = window.innerHeight/2;
+            cvs2.height = window.innerHeight*0.66;
 
             ctx.font = lucy_word_size + 'pt Calibri';   // 設定字體大小
             ctx.textAlign = 'center'                    // 設定字體致中
-            ctx.fillStyle="white";                      // 設定字體顏色
-            modalimg.src = "truck.png"
+            ctx.fillStyle='#fefefe';                      // 設定字體顏色
+            modalimg.src = lucy_img;
             modalimg.style.width = 400*factor + 'px';
         }
 
         // 宣告按鍵
         var myobs= [];
-        myobs[0]= new newbtn(window.innerWidth/2-40*factor,window.innerHeight/2+80*factor,600*factor/7,600*factor/7,"lucy-sound.png",lucy_sound);
-        myobs[1]= new newbtn(window.innerWidth/2+100*factor,window.innerHeight/2+60*factor,600*factor/6,600*factor/6,"answer.png","coin.mp3");
-        myobs[2]= new newbtn(window.innerWidth/2+200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"chinese.png","");
-        myobs[3]= new newbtn(window.innerWidth/2-200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"button03.png","");
-
+        myobs[0]= new newbtn(window.innerWidth/2-40*factor,window.innerHeight/2+80*factor,600*factor/7,600*factor/7,"static/lucy/lucy-sound.png",lucy_sound);
+        myobs[1]= new newbtn(window.innerWidth/2+100*factor,window.innerHeight/2+60*factor,600*factor/6,600*factor/6,"static/lucy/answer.png","static/lucy/coin.mp3");
+        myobs[2]= new newbtn(window.innerWidth/2+200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"static/lucy/button02.png","");
+        myobs[3]= new newbtn(window.innerWidth/2-200*factor,window.innerHeight/2+75*factor,600*factor/7,600*factor/7,"static/lucy/button03.png","");
+        myobs[0].sound.sound.playbackRate=0.7;
+                
         var mybg= [];
         mybg[0]=  new newbg(0,0, window.innerWidth, window.innerHeight,lucy_bg);
         //mybg[1] = new newbg(window.innerWidth*0.1,window.innerHeight*0.1,window.innerWidth*0.8,window.innerHeight*0.5,"menu.png")
@@ -141,6 +144,7 @@
             this.sound.src = src;
             this.sound.setAttribute("preload", "auto");
             this.sound.setAttribute("controls", "none");
+            //this.sound.playbackRate=0.5;
             this.sound.style.display = "none";
             document.body.appendChild(this.sound);
             this.play = function(){
@@ -158,14 +162,15 @@
         myobs[0].isTouch()
         if (myobs[1].isTouch()){ modal.style.display = "block"; }
         if (myobs[2].isTouch()){
-            lucy_speak.sound.src = "https://s.yimg.com/bg/dict/dreye/live/m/" + "t" +".mp3" 
-            setTimeout(lucy_speak.play(),2000)
-            //lucy_speak.play();
+            lucy_speak.sound.src = "https://s.yimg.com/bg/dict/dreye/live/m/" + lucy_letter[0] +".mp3" 
+            lucy_speak.play();
         }
 
         if (myobs[3].isTouch()){ 
             ctx2.clearRect(0,0,8000,8000);
             drawmodal.style.display = "block"; 
+            myVar = setInterval(function(){ getpix() }, 1000);  // 開啟左右掃描
+            
         }
 
     
@@ -178,15 +183,16 @@
     }
 
     drawspan.onclick = function() {
-       // modal.style.display = "none";
+       
         drawmodal.style.display="none";
+        clearInterval(myVar);   // 停止左右掃描
     }
 
 
     // canvas 滑鼠按下 ：開啟 beginPath 
     cvs2.onmousedown = function (e) {
         ctx2.strokeStyle = '#00f';
-        ctx2.lineWidth = 30;
+        ctx2.lineWidth = 15*factor;
         ctx2.lineCap = 'round';
         ctx2.globalAlpha = 1; 
         ctx2.beginPath();
@@ -211,7 +217,7 @@
     // canvas 觸碰 : 開始畫線 --------------------------
     cvs2.ontouchstart = function (e) {
         ctx2.strokeStyle = '#0ff';
-        ctx2.lineWidth = 30;
+        ctx2.lineWidth = 15*factor;
         ctx2.lineCap = 'round';
         ctx2.globalAlpha = 1; 
         ctx2.beginPath();
@@ -222,9 +228,9 @@
     // canvas 觸碰移動 : 開始畫線
     cvs2.ontouchmove = function (e) {
         this.touch=e.targetTouches[0];
-        //this.touch.pageY =this.touch.pageY-100;  //要做修正, CAVNAS跟觸碰區有距離差
+      
         if (started) {
-            ctx2.lineTo(this.touch.pageX, this.touch.pageY-100);  
+            ctx2.lineTo(this.touch.pageX, this.touch.pageY);  //要做修正, CAVNAS跟觸碰區有距離差
             ctx2.stroke();
         }
         e.preventDefault();     // 觸碰要增加這行
@@ -280,6 +286,41 @@
         }
     }
 
+
+    function getpix(){
+       
+        var pixels1 = ctx.getImageData(0,0,cvs.width,cvs.height)
+        var data1 = pixels1.data;    //取得像素資料,一個像素佔據4個bytes R/G/B/a (範圍0~255)
+        var Pixels1_count = 0;          // 取得原始字體pixel
+        var draw_count = 0              // 計算吻合pixel
+            for(var i=0; i<data1.length; i+=4){
+                if(data1[i] == 254 && data1[i+1] == 254 && data1[i+2] == 254){
+                    //data1[i] = 0
+                    //data1[i+1] = 0
+                    //data1[i+2] = 0
+                    Pixels1_count= Pixels1_count+1;
+                }
+            };
+        //ctx.putImageData(pixels1,0,0);
+  
+
+        var pixels2 = ctx2.getImageData(0,0,cvs2.width,cvs2.height)
+        var data2 = pixels2.data;    //取得像素資料,一個像素佔據4個bytes R/G/B/a (範圍0~255)
+
+        for(var i=0; i<data2.length; i+=4){
+                var diff1 = data1[i]-data2[i];
+                var diff2 = data1[i+1]-data2[i+1];
+                var diff3 = data1[i+2]-data2[i+2];
+                if(diff1 == 254 && diff2 == 254 && diff3 == 254){
+                    draw_count= draw_count +1;
+                }
+            };
+        
+        var mycount = document.getElementById("mycount");
+        var myscore = (Pixels1_count - draw_count)/Pixels1_count * 100
+        mycount.innerHTML = myscore.toFixed(0) ;
+        
+    }
 
     </script>
 
