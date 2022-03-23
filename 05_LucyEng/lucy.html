@@ -230,7 +230,7 @@
         this.touch=e.targetTouches[0];
       
         if (started) {
-            ctx2.lineTo(this.touch.pageX, this.touch.pageY);  //要做修正, CAVNAS跟觸碰區有距離差
+            ctx2.lineTo(this.touch.pageX-8, this.touch.pageY-8);  //要做修正, CAVNAS跟觸碰區有距離差
             ctx2.stroke();
         }
         e.preventDefault();     // 觸碰要增加這行
