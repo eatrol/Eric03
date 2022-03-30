@@ -1,0 +1,77 @@
+<!----phaser 學習 lesson 1 
+
+教學網址: https://medium.com/i-am-mike/phaser-js-%E7%9A%842d%E9%81%8A%E6%88%B2%E9%96%8B%E7%99%BC%E5%85%A5%E9%96%80-part-1-df1b587927ef--  
+遊戲素材網：https://itch.io/game-assets/free/tag-2d
+目的： 1. 建立遊戲世界
+      2. 建立一個會動的遊戲場景
+
+--->
+
+<html>
+<head>
+<title>phaser game 1</title>
+<script src="//cdn.jsdelivr.net/npm/phaser@3.52.0/dist/phaser.js"></script>
+<script src="//cdn.jsdelivr.net/npm/phaser@3.52.0/dist/phaser.min.js"></script>
+
+<script type="text/javascript">
+
+// 基本設定
+const gameStart = {
+    key: 'gameStart',
+    preload: function(){
+        // 載入資源
+        this.load.image('bg1', 'jungle/bg/plx-1.png');
+        this.load.image('bg2', 'jungle/bg/plx-2.png');
+        this.load.image('bg3', 'jungle/bg/plx-3.png');
+        this.load.image('bg4', 'jungle/bg/plx-4.png');
+        this.load.image('bg5', 'jungle/bg/plx-5.png');
+    },
+    create: function(){
+        // 資源載入完成，在世界加入遊戲物件及相關設定
+        this.bg1 = this.add.tileSprite(400, 300, 800, 600, 'bg1'); //遊戲中心X,遊戲中心Y,遊戲世界長,遊戲世界寬
+        this.bg2 = this.add.tileSprite(400, 300, 800, 600, 'bg2');
+        this.bg3 = this.add.tileSprite(400, 300, 800, 600, 'bg3');
+        this.bg4 = this.add.tileSprite(400, 300, 800, 600, 'bg4');
+        this.bg5 = this.add.tileSprite(400, 300, 800, 600, 'bg5');
+    },
+    update: function(){
+        // 遊戲狀態更新
+        this.bg1.tilePositionX += 4;
+        this.bg2.tilePositionX += 4;
+        this.bg3.tilePositionX += 4;
+        this.bg4.tilePositionX += 4;
+        this.bg5.tilePositionX += 4;
+    }
+}
+
+const config = {
+    type: Phaser.AUTO,  // 渲染方式 phaser.WEBGL 或 phaser.CANVAS
+    width: 800,
+    height: 200,
+    parent: 'app',
+    scene: [
+        gameStart,
+    ]
+}
+
+
+const game = new Phaser.Game(config); // 建立遊戲世界
+
+
+
+
+
+
+
+</script>
+
+
+</head>
+
+<body>
+
+    <div id=’app’></div>
+
+</body>
+
+</html>
