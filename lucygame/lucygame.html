@@ -112,6 +112,7 @@ function preload (){
     this.load.image('menuwin', 'static/lucygame/menuwin.png');
     this.load.image('menu4', 'static/lucygame/menu4.png');
     this.load.image('menu5', 'static/lucygame/menu5.png');
+    this.load.image('menu6', 'static/lucygame/menu6.png');
     this.load.image('btn06', 'static/lucygame/button06.png');
 
 
@@ -232,8 +233,8 @@ function create (){
 
     // 結束畫面 ===============
     menu4 = this.physics.add.sprite(game.config.width/2,game.config.height/2, 'menu4').setScale(factor);
-    menu5 = this.physics.add.sprite(game.config.width/2,game.config.height/2, 'menuwin').setScale(factor*2);
-    menu6 = this.physics.add.sprite(game.config.width/2,1050*factor+offsetY, 'menu5').setScale(factor*2); 
+    menu5 = this.physics.add.sprite(game.config.width/2,game.config.height/2, 'menu5').setScale(factor*0.9);
+    menu6 = this.physics.add.sprite(game.config.width/2,1150*factor+offsetY, 'menu6').setScale(factor*0.6); 
     menu6.setInteractive().on('pointerdown', () => {
         music2.stop();
         this.scene.restart();
@@ -260,7 +261,7 @@ function update (){
         timetext.setText('Game Over');
         menu4.enableBody(true, game.config.width/2,game.config.height/2, true, true);
         menu5.enableBody(true, game.config.width/2,game.config.height/2, true, true);
-        menu6.enableBody(true, game.config.width/2,1050*factor+offsetY, true, true);
+        menu6.enableBody(true, game.config.width/2,1150*factor+offsetY, true, true);
         return;
     }
 
