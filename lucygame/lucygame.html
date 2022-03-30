@@ -63,12 +63,14 @@ var textsize;
 var raw=[];
 var isAni1,isAnitime1;
 var isAni2,isAnitime2;
+var isClick;
 var menu4,menu5,menu6; //選單
 
 
 
 
 function initial(){
+    
     myPic = ['boat','flower','sky','sand','grass','pond','fire','paint','tape','clown'];
     frametime=0;
     gameOver = false;
@@ -76,6 +78,7 @@ function initial(){
     isAnitime1 = 0;
     isAni2 = true;
     isAnitime2 = 500;
+    isClick = true;
     answer = -1;
     
     // onfishing = false;
@@ -190,10 +193,10 @@ function create (){
 
     //============================
     // 設定點擊後的反應=
-    mybutton[1].favor.setInteractive().on('pointerdown', () => {toTable(1);})
-    mybutton[2].favor.setInteractive().on('pointerdown', () => {toTable(2);})
-    mybutton[3].favor.setInteractive().on('pointerdown', () => {toTable(3);})
-    mybutton[4].favor.setInteractive().on('pointerdown', () => {toTable(4);})
+    mybutton[1].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(1);}})
+    mybutton[2].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(2);}})
+    mybutton[3].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(3);}})
+    mybutton[4].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(4);}})
 
     mybutton[5].favor.setInteractive().on('pointerdown', () => {music.play();})
 
@@ -300,6 +303,7 @@ function update (){
 
 
 function toTable(pk){
+    isClick = false;
     var mine = mybutton[pk].no;
     if (mine == answer){
         // 如果答案正確 -----
@@ -351,7 +355,7 @@ function toNext(){
         gameOver= true ;
         return;
     }
-
+    isClick=true;
     music = myMusic[answer];
     music.play();
     question.setPic(answer);
