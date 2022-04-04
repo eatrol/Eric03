@@ -65,14 +65,14 @@ var isAni1,isAnitime1;
 var isAni2,isAnitime2;
 var isClick;
 var menu4,menu5,menu6; //選單
+var btn_sound,btn_show,btn_bar;
 
 
 
 
 function initial(){
     
-   // myPic = ['boat','flower','sky','sand','grass','pond','fire','paint','tape','clown'];
-    myPic = ['glue','sling','blink','beet','dinosaur','first','second','third','fourth','fifth'];
+    myPic = ['boat','flower','sky','sand','grass','pond','fire','paint','tape','clown'];
     frametime=0;
     gameOver = false;
     isAni1 = false;
@@ -104,8 +104,8 @@ function preload (){
 
 
 
-    this.load.image('bg01',  'static/lucygame/bg01.png');
-    this.load.image('btn01', 'static/lucygame/button01.png');
+    this.load.image('bg01',  'static/lucygame/2bg01.png');
+    this.load.image('btn01', 'static/lucygame/2btn1.png');
     this.load.image('btn02', 'static/lucygame/button02.png');
     this.load.image('btn05', 'static/lucygame/button05.png');
     this.load.image('btn07', 'static/lucygame/button07.png');
@@ -160,7 +160,7 @@ function create (){
 
     // 設定案件問題
     question = this.physics.add.group();
-    question = new newbutton(question.create(game.config.width/2,530*factor+offsetY,myPic[answer]));
+    question = new newbutton(question.create(game.config.width/2,470*factor+offsetY,myPic[answer]));
     question.favor.setScale(factor*0.9);
   
     // 設定音樂
@@ -181,15 +181,15 @@ function create (){
     mybutton[2] = new newbutton(favor1.create(770*factor ,1350*factor+offsetY, 'btn01'), myText[2]);
     mybutton[3] = new newbutton(favor1.create(1281*factor,1350*factor+offsetY, 'btn01'), myText[3]);
     mybutton[4] = new newbutton(favor1.create(1792*factor ,1350*factor+offsetY,'btn01'), myText[4]);
-    mybutton[5] = new newbutton(favor1.create(1890*factor, 988*factor+offsetY, 'btn02'), '');
-    mybutton[6] = new newbutton(favor1.create(game.config.width/2, 930*factor+offsetY, 'btn06'), '');   // 正確 or 錯誤牌
-    mybutton[7] = new newbutton(favor1.create(200*factor, 88*factor+offsetY, 'btn07'), '');             // 時間條
+    btn_sound = new newbutton(favor1.create(1880*factor, 1100*factor+offsetY, 'btn02'), '');           // 聲音鈕
+    btn_show = new newbutton(favor1.create(game.config.width/2, 930*factor+offsetY, 'btn06'), '');   // 正確 or 錯誤牌
+    btn_bar = new newbutton(favor1.create(200*factor, 88*factor+offsetY, 'btn07'), '');             // 時間條
     // 調整按鍵圖面大小
     favor1.children.iterate(function (child) {
          child.setScale(factor);
     });
     
-    mybutton[7].favor.setOrigin(0)
+    btn_bar.favor.setOrigin(0)
     //mybutton[7].favor.setScale(1*factor/3,factor);
     
 
@@ -200,7 +200,7 @@ function create (){
     mybutton[3].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(3);}})
     mybutton[4].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(4);}})
 
-    mybutton[5].favor.setInteractive().on('pointerdown', () => {music.play();})
+    btn_sound.favor.setInteractive().on('pointerdown', () => {music.play();})
 
     //================================
     toNext();
@@ -270,7 +270,7 @@ function update (){
     } 
 
     var slength = (isAnitime2 - frametime)/500;
-    mybutton[7].favor.setScale(1*factor*slength,factor);
+    btn_bar.favor.setScale(1*factor*slength,factor);
 
     
     scoreText.setText(score+ '/' + myPic.length);
@@ -303,14 +303,14 @@ function toTable(pk){
     if (mine == answer){
         // 如果答案正確 -----
         music3.play();
-        mybutton[6].favor.setTexture('goright');
+        btn_show.favor.setTexture('goright');
         score++;    // 得1分
 
         
     } else{
         // 如果答案錯誤 -----
         music4.play();
-        mybutton[6].favor.setTexture('gowrong');
+        btn_show.favor.setTexture('gowrong');
 
     }
     isAni1 = true;
@@ -360,7 +360,7 @@ function toNext(){
         var n = nnn[i]
         mybutton[i].setText(n);
     }
-    mybutton[6].favor.setTexture('btn06');     // 將正確/錯誤牌關起來
+    btn_show.favor.setTexture('btn06');     // 將正確/錯誤牌關起來
 
 
 }
