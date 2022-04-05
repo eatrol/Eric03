@@ -50,35 +50,58 @@ var frametime, gameOver, onfishing,fishrate,fishtop,fishbot;
 var score, scoreYes,scoreText ;
 //var worm, wormText, wormX, wormY;
 
+// 按鍵相關
 var mybutton=[];
+var mybuttonX=[];
+var youbutton = [];
+var youbuttonX = [];
+var my,you,mynum;
 
-
+// 題庫相關
 var myPic = [];
+var myPicNum = [];
+
 var myMusic = [];
 var raw = [];
-var library = [];   // 定義四個按鈕分別是哪個選項
+var listNow = [];    // 定義四個按鈕分別是哪個選項
+var listAnswer = []; // 答案順序
 var answer;     // 第幾題
+
+
 var question;
 var textsize;
 var raw=[];
-var isAni1,isAnitime1;
-var isAni2,isAnitime2;
+var isAni1,isAnitime1,isAnidelta1;
+var isAni2,isAnitime2,isAnidelta2;
 var isClick;
 var menu4,menu5,menu6; //選單
-var btn_sound,btn_show,btn_bar;
+var btn_show,btn_bar,btn_reset;
 
 
 
 
 function initial(){
-    
+
+    mynum = 15; // 設定按鍵最多的狀態
     myPic = ['boat','flower','sky','sand','grass','pond','fire','paint','tape','clown'];
+    myPic = ['glue','sling','blink','beet','dinosaur','first','second','third','fourth','fifth'];
+    for(var i=0;i<myPic.length;i++){
+        var sss = myPic[i].split('');
+        myPicNum[i] = sss.length;
+    }
+
+    //myPicNum = [4,6,3,4,5,4,4,5,4,5];
+
+    mybuttonX = [0,259,770,1281,1729]
+    //mybuttonX = [0,200,400,600,800]
     frametime=0;
     gameOver = false;
     isAni1 = false;
+    isAnidelta1 = 30;
     isAnitime1 = 0;
     isAni2 = true;
-    isAnitime2 = 500;
+    isAnidelta2 = 800;
+    isAnitime2 = isAnidelta2;
     isClick = true;
     answer = -1;
     
@@ -105,8 +128,10 @@ function preload (){
 
 
     this.load.image('bg01',  'static/lucygame/2bg01.png');
-    this.load.image('btn01', 'static/lucygame/2btn1.png');
-    this.load.image('btn02', 'static/lucygame/button02.png');
+    this.load.image('btn01', 'static/lucygame/2btn1.png');      // 按鍵
+    this.load.image('btn02', 'static/lucygame/button02.png');   // 聲音鈕
+    this.load.image('btn03', 'static/lucygame/2btn2.png');      // 填空木牌
+    this.load.image('btn04', 'static/lucygame/2btn3.png');      // reset button
     this.load.image('btn05', 'static/lucygame/button05.png');
     this.load.image('btn07', 'static/lucygame/button07.png');
 
@@ -167,54 +192,62 @@ function create (){
     music = myMusic[answer];
 
     var myTextSize = 100*factor + 'px';
-    var myText=[];
-    myText[1] = this.add.text(259*factor, 1350*factor+offsetY,'one',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
-    myText[2] = this.add.text(770*factor, 1350*factor+offsetY,'two',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
-    myText[3] = this.add.text(1281*factor, 1350*factor+offsetY,'three',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
-    myText[4] = this.add.text(1792*factor, 1350*factor+offsetY,'four',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
+ 
 
 
     // 設定按鍵圖面 group..
     favor1 = this.physics.add.group();
+    mybutton[0] = new newbutton(favor1.create(1880*factor, 1100*factor+offsetY, 'btn02'), '');           // 聲音鈕
+
+    // 設定下方案件
+
+    for(var i=1;i<=mynum;i++){
+        mybuttonX[i]= 2048/2 + (i-(mynum+1)*0.5)*200;
+        mybutton[i] = new newbutton(favor1.create(mybuttonX[i]*factor,1350*factor+offsetY,'btn01'),'' );
+        mybutton[i].text =  this.add.text(mybuttonX[i]*factor, 1350*factor+offsetY,'',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
+        youbuttonX[i]= 2048/2 + (i-(mynum+1)*0.5)*200;
+        youbutton[i] = new newbutton(favor1.create(-9999,1135*factor+offsetY,'btn03'),'' );
+        youbutton[i].text =  this.add.text(-9999, 1135*factor+offsetY,'a',{ fontSize: myTextSize, fill: '#fff'}).setOrigin(0.5);
+    }
+
+    my = new newmy(mybutton);
+    you = new newmy(youbutton);
     
-    mybutton[1] = new newbutton(favor1.create(259*factor, 1350*factor+offsetY, 'btn01'), myText[1]);
-    mybutton[2] = new newbutton(favor1.create(770*factor ,1350*factor+offsetY, 'btn01'), myText[2]);
-    mybutton[3] = new newbutton(favor1.create(1281*factor,1350*factor+offsetY, 'btn01'), myText[3]);
-    mybutton[4] = new newbutton(favor1.create(1792*factor ,1350*factor+offsetY,'btn01'), myText[4]);
-    btn_sound = new newbutton(favor1.create(1880*factor, 1100*factor+offsetY, 'btn02'), '');           // 聲音鈕
     btn_show = new newbutton(favor1.create(game.config.width/2, 930*factor+offsetY, 'btn06'), '');   // 正確 or 錯誤牌
     btn_bar = new newbutton(favor1.create(200*factor, 88*factor+offsetY, 'btn07'), '');             // 時間條
+    btn_reset = new newbutton(favor1.create(400*factor, 1135*factor+offsetY, 'btn04'), '');        // Reset Button
     // 調整按鍵圖面大小
     favor1.children.iterate(function (child) {
          child.setScale(factor);
     });
     
     btn_bar.favor.setOrigin(0)
-    //mybutton[7].favor.setScale(1*factor/3,factor);
+ 
     
-
     //============================
     // 設定點擊後的反應=
-    mybutton[1].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(1);}})
-    mybutton[2].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(2);}})
-    mybutton[3].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(3);}})
-    mybutton[4].favor.setInteractive().on('pointerdown', () => { if(isClick){toTable(4);}})
+    mybutton[1].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(1);}})
+    mybutton[2].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(2);}})
+    mybutton[3].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(3);}})
+    mybutton[4].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(4);}})
+    mybutton[5].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(5);}})
+    mybutton[6].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(6);}})
+    mybutton[7].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(7);}})
+    mybutton[8].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(8);}})
+    mybutton[9].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(9);}})
+    mybutton[10].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(10);}})
+    mybutton[11].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(11);}})
+    mybutton[12].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(12);}})
+    mybutton[13].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(13);}})
+    mybutton[14].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(14);}})
 
-    btn_sound.favor.setInteractive().on('pointerdown', () => {music.play();})
+    mybutton[0].favor.setInteractive().on('pointerdown', () => {music.play();})
 
+    
     //================================
     toNext();
 
-   
-    // // 宣告customer rder物件
-    // orders = this.physics.add.group();
-
-    // for (var i=0;i<user.length;i++){
-    //     user1 = user[i];
-    //     user1.customer.disableBody(true,true);
-    //     user1.order.disableBody(true,true);
-    //     user1.order2.disableBody(true,true);
-    // }
+    btn_reset.favor.setInteractive().on('pointerdown', () => { if(isClick){resetBtn();}})
 
 
     // // 秀出分數跟時間
@@ -266,10 +299,14 @@ function update (){
 
     if(isAni2 == true && frametime >  isAnitime2){
         isAni2= false;
-        toTable(5)
+        toTable(false)
     } 
 
-    var slength = (isAnitime2 - frametime)/500;
+    if (frametime % 50 == 0){       // 每50秒確認一次答案
+        toCheckAns();
+    }
+
+    var slength = (isAnitime2 - frametime)/isAnidelta2;
     btn_bar.favor.setScale(1*factor*slength,factor);
 
     
@@ -280,27 +317,57 @@ function update (){
 }
 
 // ************************************
+function resetBtn(){
+    var sss = myPic[answer].split('');
+    for (var i=1;i<=myPicNum[answer] ; i++){
+        var n = listNow[i-1]
+        mybutton[i].text.setText(sss[n]);
+        youbutton[i].text.setText('');
+    }
+}
 
 
 
-// function toCustomer(aa1){
-//     var me = mybutton[aa1];
-//     orders.children.iterate(function (child) {
-//         if (child.texture.key == me.raw.name  && child.active){
-//             me.setFrom1();
-//             child.disableBody(true, true); 
-//             score += 100;
-//             scoreText.setText("Score: " + score);
-//             //console.log(child);
-//         }
-//     });  
-// }
 
 
-function toTable(pk){
-    isClick = false;
-    var mine = mybutton[pk].no;
-    if (mine == answer){
+function toCheckAns(){
+    var sss = myPic[answer].split('');
+    var isAnswer = true;
+    for(var i=1;i<=myPicNum[answer];i++){
+        var yText = youbutton[i].text.text;
+        var mText = sss[i-1];
+        if (yText == ''){ 
+            return;
+        }        
+        
+        if (yText != mText) {
+            isAnswer = false;
+        }
+    }
+    toTable(isAnswer);
+
+}
+
+
+function toFill(pk){
+    var mText = mybutton[pk].text.text;
+    if (mText == '') {return}
+
+    for(var i=1;i<=myPicNum[answer];i++){
+        var yText = youbutton[i].text.text;
+        if (yText == ''){ 
+            youbutton[i].text.setText(mText);
+            mybutton[pk].text.setText('');
+            break;
+        }
+    }
+    
+}
+
+
+function toTable(isAnswer){
+    
+    if (isAnswer){
         // 如果答案正確 -----
         music3.play();
         btn_show.favor.setTexture('goright');
@@ -313,16 +380,14 @@ function toTable(pk){
         btn_show.favor.setTexture('gowrong');
 
     }
+
+    isClick = false;
     isAni1 = true;
-    isAnitime1 = frametime + 30;
+    isAnitime1 = frametime + isAnidelta1;
 
     isAni2 = true;
-    isAnitime2 = frametime + 500;
+    isAnitime2 = frametime + isAnidelta2;
     
-    for(var i=1;i<=4;i++){
-    //    mybutton[i].setText('');
-    }
-    //question.favor.setTexture('btn05');
 
 }
 
@@ -343,7 +408,48 @@ function newbutton(favor,text){
 
 }
 
+function newmy(button){
+    this.button = button;
 
+    this.clearPos = function(){
+        // 清除舊的
+        for(var i=1;i<=15;i++){
+            this.button[i].favor.x = -9999
+            this.button[i].text.x = -9999
+            this.button[i].text.text = '';
+        }
+
+    }
+
+    // 依照字元數量, 重新設定按鍵得位置
+    this.setPos = function(pk){ 
+        this.clearPos();    // 清除舊的
+
+        // 設定新的
+        var mynum = myPicNum[pk];
+        for(var i=1;i<=mynum;i++){
+            this.button[i].favor.x = (2048/2 + (i-(mynum+1)*0.5)*200)*factor;
+            this.button[i].text.x = (2048/2 + (i-(mynum+1)*0.5)*200)*factor;
+        }
+    }
+
+    this.setPosYou = function(pk){ 
+        this.clearPos();    // 清除舊的
+
+        // 設定新的
+        var mynum = myPicNum[pk];
+        for(var i=1;i<=mynum;i++){
+            this.button[i].favor.x = (2048/2 + (i-(mynum+1)*0.5)*120)*factor;
+            this.button[i].text.x = (2048/2 + (i-(mynum+1)*0.5)*120)*factor;
+        }
+    }
+
+
+
+
+}
+
+// 執行下一關
 function toNext(){
     answer = answer +1;
     if(answer >= myPic.length){ 
@@ -354,35 +460,30 @@ function toNext(){
     music = myMusic[answer];
     music.play();
     question.setPic(answer);
+    my.setPos(answer);
+    you.setPosYou(answer);
     
-    var nnn= shuffle();
-    for (var i=1;i<=4 ; i++){
-        var n = nnn[i]
-        mybutton[i].setText(n);
+    listNow = shuffle();
+    var sss = myPic[answer].split('');
+    for (var i=1;i<=myPicNum[answer] ; i++){
+        var n = listNow[i-1]
+        mybutton[i].text.setText(sss[n]);
     }
     btn_show.favor.setTexture('btn06');     // 將正確/錯誤牌關起來
-
 
 }
 
 function shuffle(){  
         var k = 0;
         var arr = [];
-        for (var i=0; i<myPic.length; i++){
-            if(i==answer){  // 把答案那個取消
-            } else{
-                arr[k] = i;
-                k++;
-            }
+        for (var i=0; i < myPicNum[answer]; i++){
+                arr[i] = i;
+            
         }    
         var newArr=[];
         randomSort(arr,newArr);
-        var choosing = Math.floor(Phaser.Math.FloatBetween(1, 5)) // 從0 ~3 選出一個數字
-    
-        newArr[choosing] = answer
         return newArr
-
-}
+    }
 
 
 function randomSort(arr, newArr) {
