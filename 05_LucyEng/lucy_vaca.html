@@ -178,7 +178,7 @@
             req.setRequestHeader('Access-Control-Allow-Origin', '*');
             req.onload=function(){
                 var ss = this.responseText;
-                //ss.setAttribute("crossOrigin",'Anonymous');
+                ss.setAttribute("crossOrigin",'Anonymous');
                 console.log(ss)
                 //var planobj = JSON.parse(ss);  //把字串轉回JSON格式,(會發現Get方法消失)
                 //lucy_letter = planobj;
