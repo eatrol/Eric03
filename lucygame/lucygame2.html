@@ -46,7 +46,7 @@ var config = {
 //var stars;
 
 var cursors;
-var frametime, gameOver, onfishing,fishrate,fishtop,fishbot;
+var frametime,endtime, gameOver, onfishing,fishrate,fishtop,fishbot;
 var score, scoreYes,scoreText ;
 //var worm, wormText, wormX, wormY;
 
@@ -75,7 +75,7 @@ var isAni1,isAnitime1,isAnidelta1;
 var isAni2,isAnitime2,isAnidelta2;
 var isClick;
 var menu4,menu5,menu6; //選單
-var btn_show,btn_bar,btn_reset;
+var btn_sound,btn_show,btn_bar,btn_reset;
 
 
 
@@ -83,30 +83,27 @@ var btn_show,btn_bar,btn_reset;
 function initial(){
 
     mynum = 15; // 設定按鍵最多的狀態
-    myPic = ['boat','flower','sky','sand','grass','pond','fire','paint','tape','clown'];
+    //myPic = ['boat','flower','sky','sand','grass','pond','fire','paint','tape','clown'];
     myPic = ['glue','sling','blink','beet','dinosaur','first','second','third','fourth','fifth'];
     for(var i=0;i<myPic.length;i++){
         var sss = myPic[i].split('');
         myPicNum[i] = sss.length;
     }
 
-    //myPicNum = [4,6,3,4,5,4,4,5,4,5];
-
-    mybuttonX = [0,259,770,1281,1729]
-    //mybuttonX = [0,200,400,600,800]
-    frametime=0;
+    frametime=0;            // 遊戲時間
+    endtime = 0;            // 遊戲結束後的時間
     gameOver = false;
     isAni1 = false;
-    isAnidelta1 = 30;
+    isAnidelta1 = 30;           // 答題後到下一題出現的間隔時間
     isAnitime1 = 0;
     isAni2 = true;
-    isAnidelta2 = 800;
+    isAnidelta2 = 800;          // 每回合答題時間
     isAnitime2 = isAnidelta2;
     isClick = true;
     answer = -1;
     
     // onfishing = false;
-    textsize = Math.floor(50*factor) + 'px';
+    textsize = Math.floor(50*factor) + 'px';    // 設定文字的尺寸
 
     score = 0;
    
@@ -197,15 +194,12 @@ function create (){
 
     // 設定按鍵圖面 group..
     favor1 = this.physics.add.group();
-    mybutton[0] = new newbutton(favor1.create(1880*factor, 1100*factor+offsetY, 'btn02'), '');           // 聲音鈕
+    //mybutton[0] = new newbutton(favor1.create(1880*factor, 1100*factor+offsetY, 'btn02'), '');           // 聲音鈕
 
-    // 設定下方案件
-
+    // 設定主要按鍵
     for(var i=1;i<=mynum;i++){
-        mybuttonX[i]= 2048/2 + (i-(mynum+1)*0.5)*200;
-        mybutton[i] = new newbutton(favor1.create(mybuttonX[i]*factor,1350*factor+offsetY,'btn01'),'' );
-        mybutton[i].text =  this.add.text(mybuttonX[i]*factor, 1350*factor+offsetY,'',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
-        youbuttonX[i]= 2048/2 + (i-(mynum+1)*0.5)*200;
+        mybutton[i] = new newbutton(favor1.create(-9999,1350*factor+offsetY,'btn01'),'' );
+        mybutton[i].text =  this.add.text(-9999, 1350*factor+offsetY,'',{ fontSize: myTextSize, fill: '#000'}).setOrigin(0.5);
         youbutton[i] = new newbutton(favor1.create(-9999,1135*factor+offsetY,'btn03'),'' );
         youbutton[i].text =  this.add.text(-9999, 1135*factor+offsetY,'a',{ fontSize: myTextSize, fill: '#fff'}).setOrigin(0.5);
     }
@@ -213,6 +207,8 @@ function create (){
     my = new newmy(mybutton);
     you = new newmy(youbutton);
     
+    // 設定其他功能鍵
+    btn_sound = new newbutton(favor1.create(1880*factor, 1100*factor+offsetY, 'btn02'), '');           // 聲音鈕
     btn_show = new newbutton(favor1.create(game.config.width/2, 930*factor+offsetY, 'btn06'), '');   // 正確 or 錯誤牌
     btn_bar = new newbutton(favor1.create(200*factor, 88*factor+offsetY, 'btn07'), '');             // 時間條
     btn_reset = new newbutton(favor1.create(400*factor, 1135*factor+offsetY, 'btn04'), '');        // Reset Button
@@ -223,7 +219,6 @@ function create (){
     
     btn_bar.favor.setOrigin(0)
  
-    
     //============================
     // 設定點擊後的反應=
     mybutton[1].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(1);}})
@@ -241,9 +236,8 @@ function create (){
     mybutton[13].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(13);}})
     mybutton[14].favor.setInteractive().on('pointerdown', () => { if(isClick){toFill(14);}})
 
-    mybutton[0].favor.setInteractive().on('pointerdown', () => {music.play();})
+    btn_sound.favor.setInteractive().on('pointerdown', () => {music.play();})
 
-    
     //================================
     toNext();
 
@@ -260,8 +254,8 @@ function create (){
 
     // 結束畫面 ===============
     menu4 = this.physics.add.sprite(game.config.width/2,game.config.height/2, 'menu4').setScale(factor);
-    menu5 = this.physics.add.sprite(game.config.width/2,game.config.height/2, 'menu5').setScale(factor*0.9);
-    menu6 = this.physics.add.sprite(game.config.width/2,1150*factor+offsetY, 'menu6').setScale(factor*0.6); 
+    menu5 = this.physics.add.sprite(game.config.width/2,0, 'menu5').setScale(factor*0.9);
+    menu6 = this.physics.add.sprite(game.config.width/2,1150*factor+offsetY-game.config.height/2, 'menu6').setScale(factor*0.6); 
     menu6.setInteractive().on('pointerdown', () => {
         music2.stop();
         this.scene.restart();
@@ -269,6 +263,7 @@ function create (){
     menu4.disableBody(true, true);  // 隱藏背景
     menu5.disableBody(true, true);  // 隱藏彈出視窗
     menu6.disableBody(true, true);  // 隱藏按鍵
+   
 
 }
 
@@ -283,12 +278,24 @@ function update (){
         this.scene.restart();
     }
 
+
+
     // 遊戲結束
     if (gameOver){
+        
         timetext.setText('Game Over');
         menu4.enableBody(true, game.config.width/2,game.config.height/2, true, true);
-        menu5.enableBody(true, game.config.width/2,game.config.height/2, true, true);
-        menu6.enableBody(true, game.config.width/2,1150*factor+offsetY, true, true);
+        menu5.enableBody(true, game.config.width/2,0, true, true);
+        menu6.enableBody(true, game.config.width/2,1150*factor+offsetY-game.config.height/2, true, true);
+        if(20*endtime < game.config.height/2){
+            menu5.y=20*endtime;
+            menu6.y=1150*factor+offsetY-game.config.height/2+20*endtime;
+        } else {
+            menu5.y=game.config.height/2;
+            menu6.y=1150*factor+offsetY;
+
+        }
+        endtime ++;
         return;
     }
 
