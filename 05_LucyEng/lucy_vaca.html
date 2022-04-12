@@ -94,7 +94,7 @@
         var lucy_sound = "https://s.yimg.com/bg/dict/dreye/live/m/truck.mp3";
         var lucy_img = "static/lucy/truck.png"  // 尺寸800*600
         var factor = window.innerWidth/800;
-        var lucy_letter = ['compensate','gander','bachelor','party','wrangle'];
+        var lucy_letter = ["go",'compensate','gander','bachelor','party','wrangle'];
         var lucy_speak = new newsound("https://s.yimg.com/bg/dict/dreye/live/m/t.mp3")
         var lucy_score = 0
  
@@ -171,7 +171,7 @@
 // -------------------------------------------------------------------
         function moveto(){
             var url = "https://script.google.com/macros/s/AKfycbzMV9ibMX0QfRcYZiwZpPWmfcIRC5KxTOrjYehg0w/dev?type=select&order_no=904"
-            url = "http://tryjsonexcel.herokuapp.com/json/"
+            url = "https://tryjsonexcel.herokuapp.com/json/"
             //var url ="http://127.0.0.1:8000/json/"
             var req= new XMLHttpRequest();  // XMLHttpReqest物件專門和伺服器做連線
             req.open("get",url,true ); 
