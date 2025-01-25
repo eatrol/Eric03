@@ -261,11 +261,8 @@ Goal : 輸入特定方位角/高度角 來控制望遠鏡
                   console.log("repeat new cycles");
                 
                   //這串的用意是要網頁暫停幾秒再做下一步,因為發現太快丟資料給ESP32 會造成GRYO輸出錯誤的數值
-                  for(var i=0;i<299999;i++){  
-                    console.log(i);
-                  }
                   var btnStart = document.getElementById("btnStart");
-                  btnStart.click();
+                  myVar1 = setTimeout(function(){ btnStart.click(); }, 3000);  // 開啟連續讀值
               }              
             };
             req.send(); //送出連線
@@ -331,7 +328,8 @@ Goal : 輸入特定方位角/高度角 來控制望遠鏡
             req.send(); //送出連線
 
           }
-             
+          
+          var myVar1;
           this.getAngle();
 
         }
