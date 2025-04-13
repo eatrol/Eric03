@@ -1,0 +1,49 @@
+<html>
+<head>
+    <title>webcam</title>
+    <style>
+        video, canvas {
+            width: 100%;
+            max-width: 480px;
+        }
+    </style>
+</head>
+
+<body>
+<video id="video1" autoplay playsinline></video>
+<canvas id="cvs"></canvas>
+
+<script>
+    const vd = document.getElementById("video1");
+    const ctx = document.getElementById("cvs").getContext("2d");
+
+    // 啟動webcam
+    async function init(){
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: "environment"  // 使用後鏡頭，如果想要自拍改成 "user"
+                },
+                audio: false
+            });
+            vd.srcObject = stream;
+        } catch (err) {
+            alert("無法啟動相機: " + err.message);
+        }
+    }
+
+    // Canvas 畫出影像
+    function refresh(){
+        if (vd.readyState >= 2) { // 確保影片有資料
+            ctx.canvas.width = vd.videoWidth;
+            ctx.canvas.height = vd.videoHeight;
+            ctx.drawImage(vd, 0, 0);
+        }
+    }
+
+    init();
+    setInterval(refresh, 100);
+</script>
+
+</body>
+</html>
