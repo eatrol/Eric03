@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeerJS Webcam 跨裝置串流</title>
+    <!-- 引入 PeerJS 官方 CDN -->
+    <script src="https://unpkg.com"></script>
+    <!-- 引入 QR Code 產生器，方便手機掃描 -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background: #f4f4f9; color: #333; }
+        video { width: 100%; max-width: 600px; background: #000; border-radius: 8px; margin-top: 15px; transform: scaleX(-1); }
+        .section { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        #qrcode { display: inline-block; margin-top: 15px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>🎬 PeerJS 筆電鏡頭傳送門</h1>
+
+    <!-- 步驟一：筆電端（發送畫面） -->
+    <div id="laptop-view" class="section">
+        <h3>第一步：在【筆電】上啟動</h3>
+        <button id="start-btn">1. 開啟筆電 Webcam 並建立連線</button>
+        <div id="status" style="margin-top:10px; font-weight:bold; color:gray;">狀態：未連線</div>
+        
+        <div id="share-zone" class="hidden">
+            <p>請用【手機】掃描下方 QR Code，或在手機瀏覽器輸入此網址：</p>
+            <div id="qrcode"></div>
+            <br>
+            <small id="url-text" style="color:#555; word-break: break-all;"></small>
+        </div>
+        <video id="local-video" autoplay playsinline muted></video>
+    </div>
+
+    <!-- 步驟二：手機端（接收畫面） -->
+    <div id="phone-view" class="section hidden">
+        <h3>第二步：【手機】觀看畫面</h3>
+        <div id="phone-status" style="font-weight:bold; color:green; margin-bottom: 10px;">正在連線到筆電...</div>
+        <video id="remote-video" autoplay playsinline></video>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetPeerId = urlParams.get('connect'); // 檢查網址是否有連線 ID
+
+        const startBtn = document.getElementById('start-btn');
+        const statusDiv = document.getElementById('status');
+        const shareZone = document.getElementById('share-zone');
+        const qrcodeDiv = document.getElementById('qrcode');
+        const urlText = document.getElementById('url-text');
+        const localVideo = document.getElementById('local-video');
+        const remoteVideo = document.getElementById('remote-video');
+
+        let localStream = null;
+        let peer = null;
+
+        // 判斷當前是手機端還是筆電端
+        if (targetPeerId) {
+            // --- 【手機端邏輯】 ---
+            document.getElementById('laptop-view').classList.add('hidden');
+            document.getElementById('phone-view').classList.remove('hidden');
+
+            // 手機端初始化 Peer
+            peer = new Peer();
+            peer.on('open', (id) => {
+                document.getElementById('phone-status').innerText = "正在向筆電請求影像串流...";
+                
+                // 手機主動呼叫筆電（WebRTC Call）
+                // 這裡傳入一個空的 MediaStream，或純粹建立連線
+                const call = peer.call(targetPeerId, new MediaStream());
+                
+                call.on('stream', (remoteStream) => {
+                    document.getElementById('phone-status').innerText = "🎉 連線成功！即時影像傳輸中";
+                    remoteVideo.srcObject = remoteStream;
+                });
+            });
+
+        } else {
+            // --- 【筆電端邏輯】 ---
+            startBtn.addEventListener('click', async () => {
+                statusDiv.innerText = "正在要求 Webcam 權限...";
+                
+                try {
+                    // 1. 取得筆電相機畫面
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                    localVideo.srcObject = localStream;
+                    
+                    statusDiv.innerText = "正在連線至 PeerJS 伺服器...";
+                    
+                    // 2. 建立 Peer（隨機產生 ID）
+                    peer = new Peer();
+                    
+                    peer.on('open', (id) => {
+                        statusDiv.innerText = "🟢 筆電已就緒，等待手機連線...";
+                        startBtn.classList.add('hidden');
+                        
+                        // 產生手機專用的連線網址
+                        const currentUrl = window.location.href.split('?')[0];
+                        const connectUrl = `${currentUrl}?connect=${id}`;
+                        urlText.innerText = connectUrl;
+                        
+                        // 產生 QR Code
+                        qrcodeDiv.innerHTML = "";
+                        new QRCode(qrcodeDiv, {
+                            text: connectUrl,
+                            width: 200,
+                            height: 200
+                        });
+                        shareZone.classList.remove('hidden');
+                    });
+
+                    // 3. 監聽手機端的來電
+                    peer.on('call', (call) => {
+                        statusDiv.innerText = "🔵 手機已連線，正在傳送影像...";
+                        // 回傳筆電的視訊串流給手機
+                        call.answer(localStream);
+                    });
+
+                } catch (err) {
+                    statusDiv.innerText = "❌ 無法開啟相機：" + err.message;
+                    console.error(err);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
